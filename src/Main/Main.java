@@ -70,13 +70,10 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	public void multiplay(){
-		String cntmsg = "connect successed";
-		try {
-			S = new Server();
-		} catch (Exception e) {
-			System.out.println("connect fail");
-		}
 
+
+			S = new Server();
+			S.start();
 			C = new Client();
 	}
 
