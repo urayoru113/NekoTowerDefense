@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Mainact extends JFrame implements ActionListener {
+public class Main extends JFrame implements ActionListener {
 //aaaHI
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
@@ -16,9 +16,9 @@ public class Mainact extends JFrame implements ActionListener {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new Mainact();
+		new Main();
 	}
-	public Mainact(){
+	public Main(){
 		init(); //initialize
 		start();
 		multiplay();
