@@ -1,4 +1,4 @@
-package Mainact;
+package Main;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -8,7 +8,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Mainact extends JFrame implements ActionListener {
+
+public class Main extends JFrame implements ActionListener {
 //aaaHI
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
@@ -17,25 +18,27 @@ public class Mainact extends JFrame implements ActionListener {
 	Server S;
 	Client C;
 
+	GuiSwing Gui = new GuiSwing();
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new Mainact();
+		new Main();
 	}
-	public Mainact(){
+	public void Main(){
 		//init(); //initialize
 		//start();
 		multiplay();
 	}
 
 	private void init() {
-		setTitle("game");
+		setTitle("Tower Denfense");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(screenSizeX, screenSizeY);
+		setJMenuBar(Gui.menu);
 		setVisible(true);
 	}
-
 	private void start(){
 		//game panel
-
 		tower tw = new tower();
 		tw.setHp(1000);
 		tw.setGold(100);

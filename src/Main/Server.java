@@ -1,4 +1,4 @@
-package Mainact;
+package Main;
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -13,7 +13,7 @@ public class Server {
 			final int port = 8888;
 
 	//wait clinet
-	public Server(){
+	public void Server(){
 		try{
 			server = new ServerSocket(port);
 
