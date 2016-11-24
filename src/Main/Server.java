@@ -1,4 +1,4 @@
-package Mainact;
+package Main;
 import java.net.ServerSocket;
 
 public class Server {

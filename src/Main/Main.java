@@ -1,4 +1,4 @@
-package Mainact;
+package Main;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
