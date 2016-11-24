@@ -3,6 +3,7 @@ package Main;
 import java.awt.Graphics;
 import java.awt.Image;
 
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -39,6 +40,48 @@ public class GuiSwing {
 		Image im;
 
 		public BackgroundPanel(Image im) {
+			this.im = im;
+			this.setOpaque(true);
+		}
+
+		// Draw the back ground.
+		public void paintComponent(Graphics g) {
+			super.paintComponents(g);
+			g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
+		}
+	}
+	class ButtonNetwork extends JButton {
+		Image im;
+
+		public ButtonNetwork(Image im) {
+			this.im = im;
+			this.setOpaque(true);
+		}
+
+		// Draw the back ground.
+		public void paintComponent(Graphics g) {
+			super.paintComponents(g);
+			g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
+		}
+	}
+	class ButtonSolo extends JButton {
+		Image im;
+
+		public ButtonSolo(Image im) {
+			this.im = im;
+			this.setOpaque(true);
+		}
+
+		// Draw the back ground.
+		public void paintComponent(Graphics g) {
+			super.paintComponents(g);
+			g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
+		}
+	}
+	class ButtonExit extends JButton {
+		Image im;
+
+		public ButtonExit(Image im) {
 			this.im = im;
 			this.setOpaque(true);
 		}
