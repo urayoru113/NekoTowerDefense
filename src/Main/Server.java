@@ -13,7 +13,7 @@ public class Server {
 			final int port = 8888;
 
 	//wait clinet
-	public void Server(){
+	public Server(){
 		try{
 			server = new ServerSocket(port);
 

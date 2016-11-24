@@ -23,7 +23,8 @@ public class Main extends JFrame implements ActionListener {
 		// TODO Auto-generated method stub
 		new Main();
 	}
-	public void Main(){
+	public Main() {
+
 		//init(); //initialize
 		//start();
 		multiplay();
@@ -70,15 +71,13 @@ public class Main extends JFrame implements ActionListener {
 
 	public void multiplay(){
 		String cntmsg = "connect successed";
-		/*try {
+		try {
 			S = new Server();
 		} catch (Exception e) {
 			System.out.println("connect fail");
-		}*/
+		}
 
 			C = new Client();
-
-
 	}
 
 	class tower{

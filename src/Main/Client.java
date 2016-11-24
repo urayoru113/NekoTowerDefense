@@ -13,15 +13,12 @@ public class Client {
 	private Socket client;
 	final int port = 8888;
 	private static final String addr = "127.0.0.1";
-
 	//connect server
 	public Client(){
-		client = new Socket();
-		try{
 
-			client = new Socket(InetAddress.getLocalHost(), port);
-			System.out.println("Connection to server IP: " +
-					client.getInetAddress().getHostAddress());
+		try{
+			client = new Socket(InetAddress.getByName(addr), port);
+			System.out.println("Connection to server IP: " + client.getInetAddress().getHostAddress());
 		} catch(java.io.IOException e) {
 			System.out.print(e.toString());
 		}
