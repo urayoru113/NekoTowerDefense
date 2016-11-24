@@ -2,7 +2,12 @@ package Main;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.io.File;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -11,11 +16,22 @@ import javax.swing.JPanel;
 
 public class GuiSwing {
 	Menu menu;
-
+	Clip play;
 	GuiSwing() {
 		menu = new Menu();
 	}
-
+	public void Gamesound() throws Exception {
+		File file = new File("music//k19.wav");
+		// ���o�����Ҫ���J��y
+		AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+		// �N���o����J��d�b�J�O����Clip
+		DataLine.Info info = new DataLine.Info(Clip.class, sound.getFormat());
+		// ���o���w��Clip�����
+		play = (Clip) AudioSystem.getLine(info);
+		play.open(sound);
+		play.start();
+		play.loop(-1);
+	}
 	class Menu extends JMenuBar {
 		JMenu system = new JMenu("System");
 		JMenuItem i1 = new JMenuItem("Save");
