@@ -1,35 +1,35 @@
 package Main;
+import java.awt.Button;
+
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 
 public class Main extends JFrame implements ActionListener {
 //aaaHI
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
-
+	Menu menu = new Menu();
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Main();
 	}
-	public Main(){
-		init(); //initialize
-		start();
-		multiplay();
-	}
-
-	private void init() {
-		setTitle("game");
+	Main(){
+		setTitle("Tower Denfense");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(screenSizeX, screenSizeY);
+		setJMenuBar(menu);
+		//start();
+		JButton bt = new JButton();
+		add(bt);
+		//multiplay();
 		setVisible(true);
 	}
-
 	private void start(){
 		//game panel
 
@@ -110,4 +110,23 @@ public class Main extends JFrame implements ActionListener {
 
 	}
 
+}
+class Menu extends JMenuBar {
+	JMenu system = new JMenu("System");
+	JMenuItem i1 = new JMenuItem("Save");
+	JMenuItem i2 = new JMenuItem("Load");
+	JMenuItem i3 = new JMenuItem("High Score");
+	JMenuItem i4 = new JMenuItem("Exit");
+
+	Menu() {
+		system.add(i1);
+		system.add(i2);
+		system.addSeparator();
+		system.add(i3);
+		system.add(i4);
+		add(system);
+		setOpaque(false);
+		setBackground(null);
+		setVisible(true);
+	}
 }
