@@ -14,13 +14,16 @@ public class Mainact extends JFrame implements ActionListener {
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
 
+	Server S;
+	Client C;
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Mainact();
 	}
 	public Mainact(){
-		init(); //initialize
-		start();
+		//init(); //initialize
+		//start();
 		multiplay();
 	}
 
@@ -59,11 +62,19 @@ public class Mainact extends JFrame implements ActionListener {
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
+
 	}
 
 	public void multiplay(){
-		Server S = new Server();
-		System.out.println(S.cntmsg);
+		String cntmsg = "connect successed";
+		/*try {
+			S = new Server();
+		} catch (Exception e) {
+			System.out.println("connect fail");
+		}*/
+
+			C = new Client();
+
 
 	}
 

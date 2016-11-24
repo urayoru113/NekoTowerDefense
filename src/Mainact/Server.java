@@ -1,4 +1,5 @@
 package Mainact;
+import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Server {
@@ -6,20 +7,29 @@ public class Server {
 		// TODO Auto-generated method stub
 		new Server();
 	}
-	private ServerSocket server;
-			final int serverPort = 8888;
-			String cntmsg;
 
+	//init var
+	private ServerSocket server;
+			final int port = 8888;
+
+	//wait clinet
 	public Server(){
 		try{
-			server = new ServerSocket(serverPort);//connect to client
-			cntmsg = "connect success";
-		} catch (java.io.IOException e){
-			cntmsg = e.getMessage().toString();
-		}
+			server = new ServerSocket(port);
 
+		} catch (java.io.IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
-	public String connect_msg(){
-		return cntmsg;
+
+	public void close(){
+		try {
+			server.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
+
 }
