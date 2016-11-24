@@ -13,25 +13,36 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
+/**
+ * GUI Component
+ * setting
+ * @author jack
+ *
+ */
 public class GuiSwing {
 	Menu menu;
 	Clip play;
 	GuiSwing() {
 		menu = new Menu();
 	}
+	/*
+	 * background Music player
+	 */
 	public void Gamesound() throws Exception {
-		File file = new File("music//k19.wav");
-		// ���o�����Ҫ���J��y
+		File file = new File("");
+		//
 		AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-		// �N���o����J��d�b�J�O����Clip
+		//
 		DataLine.Info info = new DataLine.Info(Clip.class, sound.getFormat());
-		// ���o���w��Clip�����
+		//
 		play = (Clip) AudioSystem.getLine(info);
 		play.open(sound);
 		play.start();
 		play.loop(-1);
 	}
+	/*
+	 * TooLBar setting
+	 *****************/
 	class Menu extends JMenuBar {
 		JMenu system = new JMenu("System");
 		JMenuItem i1 = new JMenuItem("Save");
@@ -51,7 +62,10 @@ public class GuiSwing {
 			setVisible(true);
 		}
 	}
-
+	/*
+	 * BackGround setting
+	 * game Frame
+	 ********************/
 	class BackgroundPanel extends JPanel {
 		Image im;
 
@@ -66,10 +80,14 @@ public class GuiSwing {
 			g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
 	}
-	class ButtonNetwork extends JButton {
+	/*
+	 * Button
+	 * to choose Multiplayer mode
+	 ****************************/
+	class ButtonMulti extends JButton {
 		Image im;
 
-		public ButtonNetwork(Image im) {
+		public ButtonMulti(Image im) {
 			this.im = im;
 			this.setOpaque(true);
 		}
@@ -80,6 +98,10 @@ public class GuiSwing {
 			g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
 	}
+	/*
+	 *Button 
+	 *to choose solo mode
+	 ********************/
 	class ButtonSolo extends JButton {
 		Image im;
 
@@ -94,6 +116,10 @@ public class GuiSwing {
 			g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
 		}
 	}
+	/*
+	 * Button
+	 * exit this game
+	 ****************/
 	class ButtonExit extends JButton {
 		Image im;
 
