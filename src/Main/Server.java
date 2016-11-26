@@ -1,15 +1,17 @@
 package Main;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server extends Thread{
-	//init var
+import Main.Client.transpacket;
+
+public class Server {
+	/*initialize var*/
 	private ServerSocket server;
 	Socket socket;
 			final int port = 8888;
 
-	//wait clinet
+	/*open server*/
 	public Server(){
 		try{
 			server = new ServerSocket(port);
@@ -17,24 +19,53 @@ public class Server extends Thread{
 			System.out.println(e.getMessage());
 		}
 		if (server != null){
-			System.out.println("›ßŠJ’Êserver");
+			System.out.println("start server");
 		}
 	}
 
-	@Override
-	public void run(){
+	/*wait client connect*/
+	public void waitClient(){
 		try{
-			System.out.println("“™‘Ò˜Aü");
+			System.out.println("wait connect");
 			socket = server.accept();
-            System.out.println("æ“¾˜Aü : InetAddress = " + socket.getInetAddress());
+            System.out.println("gethost : InetAddress = " + socket.getInetAddress());
+            
 		} catch(java.io.IOException e) {
 			System.out.println(e.getMessage());
 		}
-
+	}
+	
+	/*get way*/
+	public class getpacket implements Runnable{
+		public void run() {
+			try {
+	            DataInputStream input = new DataInputStream(socket.getInputStream());
+	            System.out.println(input.readUTF());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/*get packet*/
+	public void get(){
+		getpacket gp = new getpacket();
+		Thread t = new Thread(gp);
+		t.start();
+	}
+	
+	/*close server socket*/
+	public void closeSocket(){
+		try{
+			socket.close();
+		} catch (java.io.IOException e){
+			System.out.println(e.getMessage());
+		}
 	}
 
-
-	public void close(){
+	/*close server*/
+	public void closeServer(){
 		try {
 			server.close();
 		} catch (IOException e) {

@@ -15,8 +15,6 @@ public class Main extends JFrame implements ActionListener {
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
 
-	Server S;
-	Client C;
 
 	GuiSwing Gui = new GuiSwing();
 	public static void main(String[] args) {
@@ -70,12 +68,20 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	public void multiplay(){
-
-
-			S = new Server();
-			S.start();
-			C = new Client();
+		Server S = new Server();/*open server*/
+		Client C = new Client();/*client connect server*/
+		S.waitClient();/*server accept client connect*/
+		C.tran();/*client send HI! to server*/
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}/*wait 3 second*/
+		S.get();/*server get packet and print*/
 	}
+
+
 
 	class tower{
 		private int hp;
@@ -93,7 +99,6 @@ public class Main extends JFrame implements ActionListener {
 		public void setGold(int gold){
 			this.gold = gold;
 		}
-
 		public int getGold() {
 			return gold;
 		}
