@@ -1,32 +1,55 @@
 package Main;
+import java.io.*;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-public class Client {
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		new Client();
-	}
-
-	//init var
-	private Socket client;
+public class Client{
+	/*initailze var*/
+	private Socket socket;
 	final int port = 8888;
 	private static final String addr = "127.0.0.1";
+	
 	//connect server
 	public Client(){
 
 		try{
-			client = new Socket(InetAddress.getByName(addr), port);
-			System.out.println("Connection to server IP: " + client.getInetAddress().getHostAddress());
+			socket = new Socket(InetAddress.getByName(addr), port);
+			System.out.println("Connection to server IP: " + socket.getInetAddress());
+			System.out.println("Connection to server host: " + socket.getInetAddress().getHostName());
 		} catch(java.io.IOException e) {
 			System.out.print(e.toString());
 		}
+		if(socket != null){
+			System.out.print("connect successd");
+		}
 	}
-
-	public void close(){
+	
+	/*transpacket way*/
+	public class transpacket implements Runnable{
+		public void run() {
+			try {
+				DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+				output.writeUTF("hi !!!");
+				output.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/*transpacket*/
+	public void tran(){
+		transpacket tp = new transpacket();
+		Thread t = new Thread(tp);
+		t.start();
+	}
+	
+	/*close socket socket*/
+	public void closeSocket(){
 		try {
-			client.close();
+			socket.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

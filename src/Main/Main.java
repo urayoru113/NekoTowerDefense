@@ -24,8 +24,6 @@ public class Main extends JFrame implements ActionListener {
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
-	Server S;
-	Client C;
 	Clip play;
 	JButton Exit = new JButton(new ImageIcon(""));
 	JButton Multi = new JButton(new ImageIcon(""));
@@ -103,15 +101,20 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	public void multiplay(){
-		String cntmsg = "connect successed";
+		Server S = new Server();/*open server*/
+		Client C = new Client();/*client connect server*/
+		S.waitClient();/*server accept client connect*/
+		C.tran();/*client send HI! to server*/
 		try {
-			S = new Server();
-		} catch (Exception e) {
-			System.out.println("connect fail");
-		}
-
-			C = new Client();
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}/*wait 3 second*/
+		S.get();/*server get packet and print*/
 	}
+
+
 
 	class tower{
 		private int hp;
@@ -129,7 +132,6 @@ public class Main extends JFrame implements ActionListener {
 		public void setGold(int gold){
 			this.gold = gold;
 		}
-
 		public int getGold() {
 			return gold;
 		}
