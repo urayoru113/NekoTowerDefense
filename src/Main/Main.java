@@ -1,41 +1,74 @@
 package Main;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-
-
 public class Main extends JFrame implements ActionListener {
-//aaaHI
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
-
 	Server S;
 	Client C;
-
-	GuiSwing Gui = new GuiSwing();
+	Clip play;
+	JButton Exit = new JButton(new ImageIcon(""));
+	JButton Multi = new JButton(new ImageIcon(""));
+	JButton Room = new JButton(new ImageIcon(""));
+	Menu menu = new Menu();
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Main();
 	}
 	public Main() {
 
-		//init(); //initialize
+		init(); //initialize
 		//start();
-		multiplay();
+		//multiplay();
 	}
-
+	public void Gamesound() throws Exception {
+		File file = new File("");
+		//
+		AudioInputStream sound = AudioSystem.getAudioInputStream(file);
+		//
+		DataLine.Info info = new DataLine.Info(Clip.class, sound.getFormat());
+		//
+		play = (Clip) AudioSystem.getLine(info);
+		play.open(sound);
+		play.start();
+		play.loop(-1);
+	}
 	private void init() {
 		setTitle("Tower Denfense");
 		setResizable(false);
+		setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(screenSizeX, screenSizeY);
-		setJMenuBar(Gui.menu);
+		setJMenuBar(menu);
+		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Room.setBounds(330, 250, 120, 50);
+		Multi.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Multi.setBounds(330, 310, 120, 50);
+		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Exit.setBounds(330, 370, 120, 50);
+		add(Exit);
+		add(Multi);
+		add(Room);
 		setVisible(true);
 	}
 	private void start(){
@@ -122,5 +155,41 @@ public class Main extends JFrame implements ActionListener {
 		// TODO Auto-generated method stub
 
 	}
+}
+class Menu extends JMenuBar {
+	JMenu system = new JMenu("System");
+	JMenuItem i1 = new JMenuItem("Save");
+	JMenuItem i2 = new JMenuItem("Load");
+	JMenuItem i3 = new JMenuItem("High Score");
+	JMenuItem i4 = new JMenuItem("Exit");
 
+	Menu() {
+		system.add(i1);
+		system.add(i2);
+		system.addSeparator();
+		system.add(i3);
+		system.add(i4);
+		add(system);
+		setOpaque(false);
+		setBackground(null);
+		setVisible(true);
+	}
+}
+
+/*
+ * BackGround setting game Frame
+ ********************/
+class BackgroundPanel extends JPanel {
+	Image im;
+
+	public BackgroundPanel(Image im) {
+		this.im = im;
+		this.setOpaque(true);
+	}
+
+	// Draw the back ground.
+	public void paintComponent(Graphics g) {
+		super.paintComponents(g);
+		g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
+	}
 }
