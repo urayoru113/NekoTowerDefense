@@ -26,14 +26,16 @@ public class Main extends JFrame implements ActionListener {
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
-	Clip play;
-	//JButton Exit = new JButton(new ImageIcon(""));
+	// JButton Exit = new JButton(new ImageIcon(""));
 	JButton Exit = new JButton("Exit");
-	//JButton Multi = new JButton(new ImageIcon(""));
+	// JButton Multi = new JButton(new ImageIcon(""));
 	JButton Multi = new JButton("MultiPlay");
-	//JButton Room = new JButton(new ImageIcon(""));
+	// JButton Room = new JButton(new ImageIcon(""));
 	JButton Room = new JButton("CreateRoom");
 	Menu menu = new Menu();
+	Clip play;
+	Image bufferImage;
+	Arms Arms = new Arms();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -41,19 +43,31 @@ public class Main extends JFrame implements ActionListener {
 	}
 
 	public Main() {
-
 		init(); // initialize
-		// start();
+		start();
 		// multiplay();
 	}
 
-	public void Gamesound() throws Exception {
+	public void paint(Graphics g) {
+
+	}
+
+	public void update(Graphics g)// double buffer
+	{
+		bufferImage = createImage(getWidth(), getHeight());
+		Graphics gBuffer = bufferImage.getGraphics();
+		if (gBuffer != null)
+			paint(gBuffer);
+		else
+			paint(g);
+		gBuffer.dispose();
+		g.drawImage(bufferImage, 0, 0, null);
+	}
+
+	void Gamesound() throws Exception {
 		File file = new File("");
-		//
 		AudioInputStream sound = AudioSystem.getAudioInputStream(file);
-		//
 		DataLine.Info info = new DataLine.Info(Clip.class, sound.getFormat());
-		//
 		play = (Clip) AudioSystem.getLine(info);
 		play.open(sound);
 		play.start();
@@ -68,25 +82,25 @@ public class Main extends JFrame implements ActionListener {
 		setSize(screenSizeX, screenSizeY);
 		setJMenuBar(menu);
 		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Room.setBounds(screenSizeX/2-125, 250, 250, 50);
+		Room.setBounds(screenSizeX / 2 - 125, 250, 250, 50);
 		Room.addActionListener(this);
 		Multi.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Multi.setBounds(screenSizeX/2-125, 330, 250, 50);
+		Multi.setBounds(screenSizeX / 2 - 125, 330, 250, 50);
 		Multi.addActionListener(this);
 		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Exit.setBounds(screenSizeX/2-125, 410, 250, 50);
+		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
 		Exit.addActionListener(this);
-		add(Exit);
-		add(Multi);
-		add(Room);
+		// add(Exit);
+		// add(Multi);
+		// add(Room);
 		setVisible(true);
 	}
 
 	private void start() {
 		// game panel
-		tower tw = new tower();
-		tw.setHp(1000);
-		tw.setGold(100);
+
+		Arms.tower.setHp(1000);
+		Arms.tower.setGold(100);
 
 		JPanel pStart = new JPanel();
 		pStart.setSize(screenSizeX, screenSizeY);
@@ -106,7 +120,7 @@ public class Main extends JFrame implements ActionListener {
 		pStart.add(pEmeTower);
 
 		// my hp label
-		JLabel jMyHp = new JLabel(tw.getHp() + " / 1000");
+		JLabel jMyHp = new JLabel(Arms.tower.getHp() + " / 1000");
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
@@ -127,46 +141,12 @@ public class Main extends JFrame implements ActionListener {
 		S.get();/* server get packet and print */
 	}
 
-	class tower {
-		private int hp;
-		int gold;
-		int armLavel;
-		int goldLavel;
-
-		public void setHp(int hp) {
-			this.hp = hp;
-		}
-
-		public int getHp() {
-			return hp;
-		}
-
-		public void setGold(int gold) {
-			this.gold = gold;
-		}
-
-		public int getGold() {
-			return gold;
-		}
-
-		public void armLavel(int armLavel) {
-			this.armLavel = armLavel;
-		}
-
-		public int getarmLavel() {
-			return armLavel;
-		}
-
-		public void goldLavel(int goldLavel) {
-			this.goldLavel = goldLavel;
-		}
-
-		public int getgoldLavel() {
-			return goldLavel;
-		}
-
-	}
-
+	/*
+	 * butoon action event and socket connect (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 ********************************************************************************/
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
@@ -176,6 +156,9 @@ public class Main extends JFrame implements ActionListener {
 	}
 }
 
+/*
+ * MenuBar-->
+ *********************************/
 class Menu extends JMenuBar {
 	JMenu system = new JMenu("System");
 	JMenuItem i1 = new JMenuItem("Save");
