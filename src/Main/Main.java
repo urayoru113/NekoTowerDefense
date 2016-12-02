@@ -35,7 +35,7 @@ public class Main extends JFrame implements ActionListener {
 	Menu menu = new Menu();
 	Clip play;
 	Image bufferImage;
-	Arms Arms = new Arms();
+	Arms Arms=new Arms();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -45,23 +45,27 @@ public class Main extends JFrame implements ActionListener {
 	public Main() {
 		init(); // initialize
 		start();
+		Graphics g = this.getGraphics();
+		while(true){
+			update(g);
+		}
 		// multiplay();
 	}
 
-	public void paint(Graphics g) {
-
+	public void paintFight(Graphics g) {
+		
 	}
 
 	public void update(Graphics g)// double buffer
 	{
-		bufferImage = createImage(getWidth(), getHeight());
+		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY);
 		Graphics gBuffer = bufferImage.getGraphics();
 		if (gBuffer != null)
-			paint(gBuffer);
+			paintFight(gBuffer);
 		else
 			paint(g);
 		gBuffer.dispose();
-		g.drawImage(bufferImage, 0, 0, null);
+		g.drawImage(bufferImage, screenSizeX / 5, 0, null);
 	}
 
 	void Gamesound() throws Exception {
@@ -90,7 +94,7 @@ public class Main extends JFrame implements ActionListener {
 		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
 		Exit.addActionListener(this);
-		// add(Exit);
+		//add(Exit);
 		// add(Multi);
 		// add(Room);
 		setVisible(true);
@@ -99,9 +103,8 @@ public class Main extends JFrame implements ActionListener {
 	private void start() {
 		// game panel
 
-		Arms.tower.setHp(1000);
-		Arms.tower.setGold(100);
-
+		Arms.setHp(1000);
+		Arms.setGold(100);
 		JPanel pStart = new JPanel();
 		pStart.setSize(screenSizeX, screenSizeY);
 		add(pStart);
@@ -120,7 +123,7 @@ public class Main extends JFrame implements ActionListener {
 		pStart.add(pEmeTower);
 
 		// my hp label
-		JLabel jMyHp = new JLabel(Arms.tower.getHp() + " / 1000");
+		JLabel jMyHp = new JLabel(Arms.getHp() + " / 1000");
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
