@@ -159,18 +159,12 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 	 * @see
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 ********************************************************************************/
-	int cost = 0;
 	@Override
 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == Exit) {
 			dispose();
-		}
-	
-		if(e.getSource()==test){
-		
-			System.out.println(cost++);
 		}
 	}
 

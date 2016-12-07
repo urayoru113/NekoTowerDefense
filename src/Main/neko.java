@@ -11,7 +11,6 @@ public class neko {
 	Image image;
 	neko(){
 		
-		
 	}
 	neko(int type){
 		
