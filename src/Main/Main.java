@@ -7,6 +7,10 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 
 import javax.sound.sampled.AudioInputStream;
@@ -21,8 +25,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class Main extends JFrame implements ActionListener {
+public class Main extends JFrame implements ActionListener,KeyListener,MouseListener {
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
@@ -35,8 +40,9 @@ public class Main extends JFrame implements ActionListener {
 	Menu menu = new Menu();
 	Clip play;
 	Image bufferImage;
-	Arms Arms=new Arms();
-
+	Arms God=new Arms();
+	Arms enermy = new Arms();
+	Timer test;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Main();
@@ -45,27 +51,33 @@ public class Main extends JFrame implements ActionListener {
 	public Main() {
 		init(); // initialize
 		start();
+		test = new Timer(1000,this);
+		//test.addActionListener(this);
+		test.start();
 		Graphics g = this.getGraphics();
 		while(true){
 			update(g);
 		}
 		// multiplay();
 	}
-
+	int i = 0;
 	public void paintFight(Graphics g) {
+		g.drawLine(0 , 120 , screenSizeX * 6 / 10, i++);
+		g.drawString("HI XD 你好 "+i,0 , 120);
 		
 	}
 
 	public void update(Graphics g)// double buffer
 	{
-		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY);
+		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY*7/9);
 		Graphics gBuffer = bufferImage.getGraphics();
 		if (gBuffer != null)
 			paintFight(gBuffer);
 		else
 			paint(g);
 		gBuffer.dispose();
-		g.drawImage(bufferImage, screenSizeX / 5, 0, null);
+	
+		g.drawImage(bufferImage, screenSizeX / 5, 80, null);
 	}
 
 	void Gamesound() throws Exception {
@@ -102,9 +114,6 @@ public class Main extends JFrame implements ActionListener {
 
 	private void start() {
 		// game panel
-
-		Arms.setHp(1000);
-		Arms.setGold(100);
 		JPanel pStart = new JPanel();
 		pStart.setSize(screenSizeX, screenSizeY);
 		add(pStart);
@@ -112,18 +121,18 @@ public class Main extends JFrame implements ActionListener {
 
 		// my tower panel
 		JPanel pMytower = new JPanel();
-		pMytower.setBounds(screenSizeX / 10, screenSizeY * 1 / 3, 200, 500);
+		pMytower.setBounds(screenSizeX / 10, screenSizeY * 1 / 3, screenSizeX /10, screenSizeY * 4 / 9);
 		pMytower.setBackground(Color.BLUE);
 		pStart.add(pMytower);
 
 		// emegy tower panel
 		JPanel pEmeTower = new JPanel();
-		pEmeTower.setBounds(screenSizeX * 8 / 10, screenSizeY * 1 / 3, 200, 500);
+		pEmeTower.setBounds(screenSizeX * 8 / 10, screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
 		pEmeTower.setBackground(Color.BLUE);
 		pStart.add(pEmeTower);
 
 		// my hp label
-		JLabel jMyHp = new JLabel(Arms.getHp() + " / 1000");
+		JLabel jMyHp = new JLabel(God.getHp() + " / 1000");
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
@@ -150,12 +159,67 @@ public class Main extends JFrame implements ActionListener {
 	 * @see
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 ********************************************************************************/
+	int cost = 0;
 	@Override
+
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == Exit) {
 			dispose();
 		}
+	
+		if(e.getSource()==test){
+		
+			System.out.println(cost++);
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

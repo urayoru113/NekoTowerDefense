@@ -17,6 +17,8 @@ public class Arms {
 
 	Arms() {
 		soldier = new ArrayList<>();
+		gold=100;
+		hp=1000;
 	}
 
 	Arms(String race) {
