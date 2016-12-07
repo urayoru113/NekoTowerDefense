@@ -66,5 +66,4 @@ public class Arms {
 	public int getgoldLevel() {
 		return goldLevel;
 	}
-
 }
