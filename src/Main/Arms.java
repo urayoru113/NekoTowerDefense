@@ -9,12 +9,12 @@ import java.util.ArrayList;
  *
  */
 public class Arms {
-	private int hp;
+	private int hp;//Tower(player) hp
 	private int gold;
-	private int armLavel;
-	private int goldLavel;
-	private ArrayList<Integer> soldier;// max number of soldier
-
+	private int armLavel;//
+	private int goldLavel;//
+	private ArrayList<Integer> soldier;//add soldier(neko) into arrayList
+	//initialize
 	Arms() {
 		soldier = new ArrayList<>();
 		gold=100;
