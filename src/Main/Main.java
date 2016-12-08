@@ -74,6 +74,7 @@ public class Main extends JFrame implements ActionListener {
 
 			S = new Server();
 			S.start();
+
 			C = new Client();
 	}
 

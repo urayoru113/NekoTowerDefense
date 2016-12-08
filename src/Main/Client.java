@@ -7,7 +7,7 @@ public class Client extends Thread{
 	//init var
 	private Socket client;
 	final int port = 8888;
-	private static final String addr = "140.115.17.101";
+	private static final String addr = "127.0.0.1";
 	//connect server
 	public Client(){
 
@@ -20,6 +20,9 @@ public class Client extends Thread{
 		}
 		if(client != null){
 			System.out.print("connect successd");
+		}
+		else {
+			System.out.print("connect fail");
 		}
 	}
 
