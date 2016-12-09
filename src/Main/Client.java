@@ -25,6 +25,34 @@ public class Client{
 		}
 	}
 	
+	public class transmit{
+		String[] catagory = {"message"};
+		private String dataType;
+		private String msg;
+		
+		Thread t = new Thread(){
+			public void run(){
+				try {
+					DataOutputStream output = new DataOutputStream(socket.getOutputStream());
+					output.writeUTF(dataType);
+					output.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		void send(String s, String msg){
+			dataType = s;
+			this.msg = msg;
+			t.start();
+		}
+		void send(String s, int num){
+			dataType = s;
+		}
+	}
+	
 	/*transpacket way*/
 	public class transpacket implements Runnable{
 		public void run() {

@@ -7,8 +7,8 @@ import java.awt.Image;
  *
  */
 public class neko {
-	int HP,MP,moveSpeed,kb,backSpeed,type,level;
-	Image image;
+	private int HP, MP, moveSpeed, kb, backSpeed, type, level;
+	private Image image;
 	neko(){
 		
 	}

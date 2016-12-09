@@ -25,6 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
 public class Main extends JFrame implements ActionListener,KeyListener,MouseListener {
@@ -37,12 +38,15 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 	JButton Multi = new JButton("MultiPlay");
 	// JButton Room = new JButton(new ImageIcon(""));
 	JButton Room = new JButton("CreateRoom");
+	JLabel[] msgLabel = new JLabel[7];
+	JTextField inputText;
 	Menu menu = new Menu();
 	Clip play;
 	Image bufferImage;
 	Arms God=new Arms();
 	Arms enermy = new Arms();
-	Timer test;
+	Timer counter = new Timer(1000, this);//set counter
+	String[] strMsg = {"", "", "", "", "", "", ""};//communication message
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Main();
@@ -51,15 +55,14 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 	public Main() {
 		init(); // initialize
 		start();
-		test = new Timer(1000,this);
 		//test.addActionListener(this);
-		test.start();
 		Graphics g = this.getGraphics();
 		while(true){
 			update(g);
 		}
 		// multiplay();
 	}
+	
 	int i = 0;
 	public void paintFight(Graphics g) {
 		g.drawLine(0 , 120 , screenSizeX * 6 / 10, i++);
@@ -107,8 +110,8 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
 		Exit.addActionListener(this);
 		//add(Exit);
-		// add(Multi);
-		// add(Room);
+		//add(Multi);
+		//add(Room);
 		setVisible(true);
 	}
 
@@ -136,7 +139,32 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
-
+		
+		// make a communication Label
+		for (int i = 0; i < 7; i++){
+			msgLabel[i] = new JLabel(strMsg[i]);
+			msgLabel[i].setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * i / 12
+								, screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+			pStart.add(msgLabel[i]);
+		}
+		
+		inputText = new JTextField();
+		inputText.setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12
+						  , screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+		inputText.addKeyListener(this);
+		pStart.add(inputText);
+		
+	}
+	
+	/*update communication label*/
+	public void communication(String str){
+		for (int i = 1; i < 7; i++){
+			strMsg[i - 1] = strMsg[i];
+			msgLabel[i - 1].setText(strMsg[i - 1]);
+			}
+		strMsg[6] = str;
+		msgLabel[6].setText(strMsg[6]);
+		inputText.setText("");
 	}
 
 	public void multiplay() {
@@ -175,8 +203,11 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && !inputText.getText().isEmpty()) {
+			communication(inputText.getText());
+		}
 		
 	}
 
