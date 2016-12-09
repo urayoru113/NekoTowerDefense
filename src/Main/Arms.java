@@ -7,26 +7,28 @@ import java.util.ArrayList;
  * 
  * @author jack
  *
- */
+ *******************************************/
 public class Arms {
 	private int hp;//Tower(player) hp
 	private int gold;
-	private int armLavel;//
-	private int goldLavel;//
-	private ArrayList<Integer> soldier;//add soldier(neko) into arrayList
+	private int armLevel;//
+	private int goldLevel;//
+	private ArrayList<Neko> soldier;//add soldier(neko) into arrayList
 	//initialize
 	Arms() {
 		soldier = new ArrayList<>();
 		gold=100;
 		hp=1000;
+		goldLevel=1;
+		armLevel=1;
 	}
 
 	Arms(String race) {
 
 	}
-
+	//add soldier
 	public void addSoldier(int type) {
-
+		soldier.add(new Neko(type));
 	}
 
 	public void removeSoldier(int position) {
@@ -49,20 +51,19 @@ public class Arms {
 		return gold;
 	}
 
-	public void armLavel(int armLavel) {
-		this.armLavel = armLavel;
+	public void armLevel(int armLevel) {
+		this.armLevel = armLevel;
 	}
 
-	public int getarmLavel() {
-		return armLavel;
+	public int getarmLevel() {
+		return armLevel;
 	}
 
-	public void goldLavel(int goldLavel) {
-		this.goldLavel = goldLavel;
+	public void goldLevel(int goldLevel) {
+		this.goldLevel = goldLevel;
 	}
 
-	public int getgoldLavel() {
-		return goldLavel;
+	public int getgoldLevel() {
+		return goldLevel;
 	}
-
 }

@@ -67,7 +67,6 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 	public void paintFight(Graphics g) {
 		g.drawLine(0 , 120 , screenSizeX * 6 / 10, i++);
 		g.drawString("HI XD 你好 "+i,0 , 120);
-		
 	}
 
 	public void update(Graphics g)// double buffer
