@@ -11,8 +11,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -28,10 +31,17 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-public class Main extends JFrame implements ActionListener,KeyListener,MouseListener {
+public class Main extends JFrame implements ActionListener, KeyListener, MouseListener {
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
+	Color myFontColor = Color.blue;
+	Color emeFontColor = Color.red;
+	String myName = "A";
+	String emeName = "B";
+	ImageIcon Tower = new ImageIcon("myTower");
+	JPanel pStart;
+
 	// JButton Exit = new JButton(new ImageIcon(""));
 	JButton Exit = new JButton("Exit");
 	// JButton Multi = new JButton(new ImageIcon(""));
@@ -39,46 +49,61 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 	// JButton Room = new JButton(new ImageIcon(""));
 	JButton Room = new JButton("CreateRoom");
 	JLabel[] msgLabel = new JLabel[7];
-	JTextField inputText;
+	JTextField inputText = new JTextField("");
 	Menu menu = new Menu();
 	Clip play;
 	Image bufferImage;
-	Arms God=new Arms();
+	Arms God = new Arms();
 	Arms enermy = new Arms();
-	Timer counter = new Timer(1000, this);//set counter
-	String[] strMsg = {"", "", "", "", "", "", ""};//communication message
+	Timer msgCheck = new Timer(50, this);// set counter
+	Timer anime = new Timer(15, this);// set counte
+	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
+	Server S;
+	Client C;
+	BackgroundPanel aa;
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new Main();
+		new Main(1);
 	}
 
 	public Main() {
+
+	}
+
+	public Main(int i) {
 		init(); // initialize
 		start();
-		//test.addActionListener(this);
+	}
+
+	public void test() {
 		Graphics g = this.getGraphics();
-		while(true){
+
+		/*
+		 * while (true)
+		 */ {
 			update(g);
 		}
-		// multiplay();
+
 	}
-	
+
 	int i = 0;
+
 	public void paintFight(Graphics g) {
-		g.drawLine(0 , 120 , screenSizeX * 6 / 10, i++);
-		g.drawString("HI XD 你好 "+i,0 , 120);
+		g.drawLine(0, 120, screenSizeX * 6 / 10, i++);
+		g.drawString("HI XD 你好 " + i, 0, 120);
 	}
 
 	public void update(Graphics g)// double buffer
 	{
-		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY*7/9);
+		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY * 7 / 9);
 		Graphics gBuffer = bufferImage.getGraphics();
 		if (gBuffer != null)
 			paintFight(gBuffer);
 		else
 			paint(g);
 		gBuffer.dispose();
-	
+
 		g.drawImage(bufferImage, screenSizeX / 5, 80, null);
 	}
 
@@ -108,25 +133,32 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
 		Exit.addActionListener(this);
-		//add(Exit);
-		//add(Multi);
-		//add(Room);
+		add(Exit);
+		add(Multi);
+		add(Room);
+		aa = new BackgroundPanel(Tower.getImage(), screenSizeY / 10,screenSizeY * 4 / 9);
+		aa.setSize(100,100);
+		add(aa);
 		setVisible(true);
 	}
 
 	private void start() {
 		// game panel
-		JPanel pStart = new JPanel();
+	
+
+		pStart = new JPanel();
 		pStart.setSize(screenSizeX, screenSizeY);
-		add(pStart);
+		aa = new BackgroundPanel(Tower.getImage(), screenSizeY / 10,screenSizeY * 4 / 9);
 		pStart.setLayout(null);// cancel all set
-
+		aa.setBounds(screenSizeX / 10, screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
 		// my tower panel
-		JPanel pMytower = new JPanel();
-		pMytower.setBounds(screenSizeX / 10, screenSizeY * 1 / 3, screenSizeX /10, screenSizeY * 4 / 9);
-		pMytower.setBackground(Color.BLUE);
+		/*
+		 * JPanel pMytower = new JPanel(); pMytower.setBounds(screenSizeX / 10,
+		 * screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
+		 * pMytower.setBackground(Color.BLUE);	 
 		pStart.add(pMytower);
-
+*/
+		//pStart.add(aa);
 		// emegy tower panel
 		JPanel pEmeTower = new JPanel();
 		pEmeTower.setBounds(screenSizeX * 8 / 10, screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
@@ -138,46 +170,54 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
-		
+
 		// make a communication Label
-		for (int i = 0; i < 7; i++){
+		for (int i = 0; i < 7; i++) {
 			msgLabel[i] = new JLabel(strMsg[i]);
-			msgLabel[i].setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * i / 12
-								, screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+			msgLabel[i].setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * i / 12,
+					screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
 			pStart.add(msgLabel[i]);
 		}
-		
-		inputText = new JTextField();
-		inputText.setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12
-						  , screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+		inputText.setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12,
+				screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
 		inputText.addKeyListener(this);
 		pStart.add(inputText);
-		
+
 	}
-	
-	/*update communication label*/
-	public void communication(String str){
-		for (int i = 1; i < 7; i++){
+
+	/* update communication label */
+	public void communication(String str) {
+		for (int i = 1; i < 7; i++) {
 			strMsg[i - 1] = strMsg[i];
+			msgLabel[i - 1].setForeground(msgLabel[i].getForeground());
 			msgLabel[i - 1].setText(strMsg[i - 1]);
-			}
+		}
+		msgLabel[6].setForeground(myFontColor);
 		strMsg[6] = str;
 		msgLabel[6].setText(strMsg[6]);
-		inputText.setText("");
+	}
+
+	public void communication1(String str) {
+		for (int i = 1; i < 7; i++) {
+			strMsg[i - 1] = strMsg[i];
+			msgLabel[i - 1].setText(strMsg[i - 1]);
+		}
+		strMsg[6] = str;
+		msgLabel[6].setText(strMsg[6]);
 	}
 
 	public void multiplay() {
-		Server S = new Server();/* open server */
-		Client C = new Client();/* client connect server */
+		S = new Server();/* open server */
+		C = new Client();/* client connect server */
 		S.waitClient();/* server accept client connect */
-		C.tran();/* client send HI! to server */
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} /* wait 3 second */
-		S.get();/* server get packet and print */
+		C.sendpkg();
+		S.sendpkg();
+		int i = 0;
+		/*
+		 * while(i < 5){ C.send("message", i); try { Thread.sleep(1); } catch
+		 * (InterruptedException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } i++; }
+		 */
 	}
 
 	/*
@@ -193,57 +233,79 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		if (e.getSource() == Exit) {
 			dispose();
 		}
+		if (e.getSource() == Room) {
+			this.setLayout(null);
+			remove(Multi);
+			remove(Exit);
+			remove(Room);
+			this.getContentPane().add(pStart);
+			this.paintComponents(getGraphics());
+			multiplay();
+			test();
+			msgCheck.start();
+		}
+
+		if (e.getSource() == msgCheck) {
+			String s;
+			if (!(S.message() == "")) {
+				communication(emeName + ": " + S.message());
+				S.resetMsg();
+			}
+		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getKeyCode() == KeyEvent.VK_ENTER && !inputText.getText().isEmpty()) {
-			communication(inputText.getText());
+			communication(myName + ": " + inputText.getText());
+			msgLabel[6].setForeground(emeFontColor);
+			C.send("message", inputText.getText());
+			inputText.setText("");
 		}
-		
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
 
@@ -274,16 +336,20 @@ class Menu extends JMenuBar {
  * BackGround setting game Frame
  ********************/
 class BackgroundPanel extends JPanel {
-	Image im;
+	private Image im;
+	private int sizeX;
+	private int sizeY;
 
-	public BackgroundPanel(Image im) {
+	public BackgroundPanel(Image im, int sizeX, int sizeY) {
 		this.im = im;
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
 		this.setOpaque(true);
 	}
 
 	// Draw the back ground.
 	public void paintComponent(Graphics g) {
 		super.paintComponents(g);
-		g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
+		g.drawImage(im, 0, 0, sizeX, sizeY, this);
 	}
 }

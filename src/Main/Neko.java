@@ -9,7 +9,7 @@ import java.awt.Image;
 public class Neko {
 	private int hp,mp,kb;
 	private int moveSpeed,backSpeed;
-	private int type,level;
+	private int type,level,alive;
 	Image image;
 	Neko(){
 		
