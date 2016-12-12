@@ -1,5 +1,4 @@
 package Main;
-
 import java.util.ArrayList;
 
 /**
@@ -13,10 +12,9 @@ public class Arms {
 	private int gold;
 	private int armLevel;//
 	private int goldLevel;//
-	private ArrayList<Neko> soldier;//add soldier(neko) into arrayList
+	private ArrayList<Neko>soldier = new ArrayList<>();;//add soldier(neko) into arrayList
 	//initialize
 	Arms() {
-		soldier = new ArrayList<>();
 		gold=100;
 		hp=1000;
 		goldLevel=1;
@@ -28,7 +26,7 @@ public class Arms {
 	}
 	//add soldier
 	public void addSoldier(int type) {
-		soldier.add(new Neko(type));
+		//|soldier
 	}
 
 	public void removeSoldier(int position) {

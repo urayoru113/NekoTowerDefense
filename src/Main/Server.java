@@ -1,71 +1,115 @@
 package Main;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import Main.Client.transpacket;
-
 public class Server {
-	/*initialize var*/
+	/* initialize var */
 	private ServerSocket server;
-	Socket socket;
-			final int port = 8888;
+	private Socket socket;
+	private final int port = 8888;
+	private String[] getMsg;
+	private String Msg = "";
 
-	/*open server*/
-	public Server(){
-		try{
+	/* open server */
+	public Server() {
+		try {
 			server = new ServerSocket(port);
-		} catch (java.io.IOException e){
+			/*
+			 * System.out.println("wait connect"); socket = server.accept();
+			 * System.out.println("gethost : InetAddress = " +
+			 * socket.getInetAddress());
+			 */
+		} catch (java.io.IOException e) {
 			System.out.println(e.getMessage());
 		}
-		if (server != null){
+		if (server != null) {
 			System.out.println("start server");
 		}
+
 	}
 
-	/*wait client connect*/
-	public void waitClient(){
-		try{
-			System.out.println("wait connect");
-			socket = server.accept();
-            System.out.println("gethost : InetAddress = " + socket.getInetAddress());
-            
-		} catch(java.io.IOException e) {
-			System.out.println(e.getMessage());
-		}
+	public void sendpkg() {
+		new Thread(new Runnable() {
+			DataInputStream input;
+			DataOutputStream output;
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				while (true) {
+					try {
+						input = new DataInputStream(socket.getInputStream());
+					} catch (Exception e) {
+						continue;
+					}
+					try {
+
+						while (input != null) {
+							synchronized (this) {
+								decode(input.readUTF());
+							}
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+
+					}
+				}
+			}
+		}).start();
 	}
-	
-	/*get way*/
-	public class getpacket implements Runnable{
-		public void run() {
-			try {
-	            DataInputStream input = new DataInputStream(socket.getInputStream());
-	            System.out.println(input.readUTF());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+	/* decode packet */
+	public void decode(String packet) {
+		String[] s = packet.split("&9o");
+		for (String g : s)
+			System.out.println(g);
+		for (String getMsg : s) {
+			this.getMsg = getMsg.split("&8o");
+			for(String j:this.getMsg)
+			System.out.println(j);
+			switch (this.getMsg[0]) {
+			case "message":
+				Msg = this.getMsg[1];
+				break;
 			}
 		}
 	}
-	
-	/*get packet*/
-	public void get(){
-		getpacket gp = new getpacket();
-		Thread t = new Thread(gp);
-		t.start();
+	public String message() {
+		return Msg;
 	}
-	
-	/*close server socket*/
-	public void closeSocket(){
-		try{
-			socket.close();
-		} catch (java.io.IOException e){
+	public void resetMsg() {
+		Msg = "";
+	}
+
+	/* wait client connect */
+	public void waitClient() {
+		try {
+			System.out.println("wait connect");
+			socket = server.accept();
+			System.out.println("Server connect successed");
+			System.out.println("gethost : InetAddress = " + socket.getInetAddress());
+			server.close();
+		} catch (java.io.IOException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 
-	/*close server*/
-	public void closeServer(){
+	/* get way */
+
+	/* close server socket */
+	public void closeSocket() {
+		try {
+			socket.close();
+		} catch (java.io.IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	/* close server */
+	public void closeServer() {
 		try {
 			server.close();
 		} catch (IOException e) {
@@ -73,6 +117,5 @@ public class Server {
 			e.printStackTrace();
 		}
 	}
-
 
 }

@@ -25,57 +25,76 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.Timer;
 
-public class Main extends JFrame implements ActionListener,KeyListener,MouseListener {
+public class Main extends JFrame implements ActionListener, KeyListener, MouseListener {
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
+	Color myFontColor = Color.blue;
+	Color emeFontColor = Color.red;
+	String myName = "A";
+	String emeName = "B";
+
+	ImageIcon myTowerImg = new ImageIcon("src//img//myTower.png");
+
+	JPanel pStart;
 	// JButton Exit = new JButton(new ImageIcon(""));
 	JButton Exit = new JButton("Exit");
 	// JButton Multi = new JButton(new ImageIcon(""));
 	JButton Multi = new JButton("MultiPlay");
 	// JButton Room = new JButton(new ImageIcon(""));
 	JButton Room = new JButton("CreateRoom");
+
+	// the soldier
+	JButton neko;
+	// the gold
+	JButton goldLabel = new JButton("Gold");
+
+	JLabel[] msgLabel = new JLabel[7];
+	JLabel jMyTowerHp;
+	JLabel jMyGold;
+	JTextField inputText = new JTextField("");
 	Menu menu = new Menu();
 	Clip play;
 	Image bufferImage;
-	Arms God=new Arms();
-	Arms enermy = new Arms();
-	Timer test;
+	Arms God = new Arms();
+	Arms enemy = new Arms();
+	Timer msgCheck = new Timer(50, this);// set counter
+	Timer anime = new Timer(1, this);// set counte
+	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
+	Server S;
+	Client C;
+	BackgroundPanel myTower,eneTower;
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		new Main();
 	}
 
-	public Main() {
+	 Main() {
 		init(); // initialize
 		start();
-		test = new Timer(1000,this);
-		//test.addActionListener(this);
-		test.start();
-		Graphics g = this.getGraphics();
-		while(true){
-			update(g);
-		}
-		// multiplay();
-	}
-	int i = 0;
-	public void paintFight(Graphics g) {
-		g.drawLine(0 , 120 , screenSizeX * 6 / 10, i++);
-		g.drawString("HI XD 你好 "+i,0 , 120);
 	}
 
+	public void paintFight(Graphics g) {
+
+		g.setColor(Color.GREEN);
+		g.fillRect(0,0,100000,100000);
+		g.setColor(Color.BLACK);
+	}
+
+	@Override
 	public void update(Graphics g)// double buffer
 	{
-		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY*7/9);
+		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY *  12/ 17);
 		Graphics gBuffer = bufferImage.getGraphics();
 		if (gBuffer != null)
 			paintFight(gBuffer);
 		else
 			paint(g);
 		gBuffer.dispose();
-	
 		g.drawImage(bufferImage, screenSizeX / 5, 80, null);
 	}
 
@@ -105,70 +124,93 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
 		Exit.addActionListener(this);
-		//add(Exit);
-		// add(Multi);
-		// add(Room);
+		add(Exit);
+		add(Multi);
+		add(Room);
 		setVisible(true);
 	}
 
 	private void start() {
 		// game panel
-		JPanel pStart = new JPanel();
+		pStart = new JPanel();
 		pStart.setSize(screenSizeX, screenSizeY);
-		add(pStart);
 		pStart.setLayout(null);// cancel all set
 
 		// my tower panel
-		JPanel pMytower = new JPanel();
-		pMytower.setBounds(screenSizeX / 10, screenSizeY * 1 / 3, screenSizeX /10, screenSizeY * 4 / 9);
-		pMytower.setBackground(Color.BLUE);
-		pStart.add(pMytower);
+		myTower = new BackgroundPanel(myTowerImg.getImage(), 440/2,451/2);
+		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 440/2, 451/2);
 
-		// emegy tower panel
-		JPanel pEmeTower = new JPanel();
-		pEmeTower.setBounds(screenSizeX * 8 / 10, screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
-		pEmeTower.setBackground(Color.BLUE);
-		pStart.add(pEmeTower);
+		// enemy tower panel
+		eneTower = new BackgroundPanel(myTowerImg.getImage(), 440/2,451/2);
+		eneTower.setBounds(screenSizeX *16/ 20, screenSizeY * 1 / 3, 440/2, 451/2);
 
 		// my hp label
-		JLabel jMyHp = new JLabel(God.getHp() + " / 1000");
-		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
-		jMyHp.setBackground(Color.red);
-		pStart.add(jMyHp);
+		jMyTowerHp = new JLabel(God.getHp() + " / 1000");
+		jMyTowerHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
+		jMyTowerHp.setBackground(Color.red);
+		pStart.add(jMyTowerHp);
+		pStart.add(myTower);
+		pStart.add(eneTower);
 
+		// my gold label
+		jMyGold = new JLabel("Gold: " + God.getGold());
+		jMyGold.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 120, 200, 30);
+		jMyGold.setBackground(Color.red);
+		pStart.add(jMyGold);
+		pStart.add(myTower);
+		pStart.add(eneTower);
+
+
+		//make battle button
+		neko = new JButton("Neko");
+		neko.setBounds(0, screenSizeY * 7 / 9, screenSizeX * 1 / 9, screenSizeY * 2 / 9);
+		pStart.add(neko);
+
+		// make a communication Label
+		for (int i = 0; i < 7; i++) {
+			msgLabel[i] = new JLabel(strMsg[i]);
+			msgLabel[i].setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * i / 12,
+					screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+			pStart.add(msgLabel[i]);
+		}
+        inputText.setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12
+        		          , screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+		inputText.addKeyListener(this);
+		pStart.add(inputText);
 	}
 
-<<<<<<< HEAD
-	public void multiplay(){
+	/* update communication label */
+	public void communication(String str) {
+		for (int i = 1; i < 7; i++) {
+			strMsg[i - 1] = strMsg[i];
+			msgLabel[i - 1].setForeground(msgLabel[i].getForeground());
+			msgLabel[i - 1].setText(strMsg[i - 1]);
+		}
+		msgLabel[6].setForeground(myFontColor);
+		strMsg[6] = str;
+		msgLabel[6].setText(strMsg[6]);
+	}
 
-
-			S = new Server();
-			S.start();
-
-			C = new Client();
-=======
 	public void multiplay() {
-		Server S = new Server();/* open server */
-		Client C = new Client();/* client connect server */
+		S = new Server();/* open server */
+		C = new Client();/* client connect server */
 		S.waitClient();/* server accept client connect */
-		C.tran();/* client send HI! to server */
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} /* wait 3 second */
-		S.get();/* server get packet and print */
->>>>>>> ad874da0aabfb576f4dc69ed425180188405e61a
+		C.sendpkg();
+		S.sendpkg();
+		int i = 0;
+		/*
+		 * while(i < 5){ C.send("message", i); try { Thread.sleep(1); } catch
+		 * (InterruptedException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } i++; }
+		 */
 	}
 
 	/*
 	 * butoon action event and socket connect (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 ********************************************************************************/
-	int cost = 0;
 	@Override
 
 	public void actionPerformed(ActionEvent e) {
@@ -176,59 +218,88 @@ public class Main extends JFrame implements ActionListener,KeyListener,MouseList
 		if (e.getSource() == Exit) {
 			dispose();
 		}
-	
-		if(e.getSource()==test){
-		
-			System.out.println(cost++);
+		if (e.getSource() == Room) {
+			this.setLayout(null);
+			remove(Multi);
+			remove(Exit);
+			remove(Room);
+			this.getContentPane().add(pStart);
+			this.paintComponents(getGraphics());
+			//multiplay();
+			//msgCheck.start();
+			anime.start();
+		}
+
+		if (e.getSource() == msgCheck) {
+			String s;
+			if (!(S.message() == "")) {
+				communication(emeName + ": " + S.message());
+				S.resetMsg();
+			}
+		}
+		if (e.getSource() == anime) {
+			update(getGraphics());
+		}
+
+		if (e.getSource() == neko) {
+
 		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
+		/*set message to emery*/
+		if (e.getKeyCode() == KeyEvent.VK_ENTER && !inputText.getText().isEmpty()) {
+			communication(myName + ": " + inputText.getText());
+			msgLabel[6].setForeground(emeFontColor);
+			C.send("message", inputText.getText());
+			inputText.setText("");
+		}
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
 
@@ -259,16 +330,21 @@ class Menu extends JMenuBar {
  * BackGround setting game Frame
  ********************/
 class BackgroundPanel extends JPanel {
-	Image im;
+	private Image img;
+	private int sizeX;
+	private int sizeY;
 
-	public BackgroundPanel(Image im) {
-		this.im = im;
+	public BackgroundPanel(Image im, int sizeX, int sizeY) {
+		this.img = img;
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
 		this.setOpaque(true);
 	}
 
 	// Draw the back ground.
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponents(g);
-		g.drawImage(im, 0, 0, this.getWidth(), this.getHeight(), this);
+		g.drawImage(img, 0, 0, sizeX, sizeY, this);
 	}
 }
