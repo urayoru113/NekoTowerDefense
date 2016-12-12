@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 /**
  * player can choose different kinds of arms
- * 
+ *
  * @author jack
  *
  *******************************************/
