@@ -37,7 +37,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	String myName = "A";
 	String emeName = "B";
 
-	ImageIcon myTowerImg = new ImageIcon("src//img//myTower.png");
+	ImageIcon myTowerImg = new ImageIcon("src//img//rev_1.png");
 
 	JPanel pStart;
 	// JButton Exit = new JButton(new ImageIcon(""));
@@ -61,9 +61,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Image bufferImage;
 	Arms God = new Arms();
 	Arms enemy = new Arms();
-	Timer msgCheck = new Timer(1, this);// set counter
+	Timer msgCheck = new Timer(50, this);// set counter
 	Timer anime = new Timer(5, this);// set counte
 	Timer nekomove = new Timer(30, this);// set counte
+	Timer collistion = new Timer(30,this);
 	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
 	Server S;
 	Client C;
@@ -75,7 +76,26 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	}
 
 	Main() {
-		init(); // initialize
+		// initialize
+		setTitle("Tower Denfense");
+		setResizable(false);
+		setLayout(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(screenSizeX, screenSizeY);
+		setJMenuBar(menu);
+		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Room.setBounds(screenSizeX / 2 - 125, 250, 250, 50);
+		Room.addActionListener(this);
+		Multi.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Multi.setBounds(screenSizeX / 2 - 125, 330, 250, 50);
+		Multi.addActionListener(this);
+		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
+		Exit.addActionListener(this);
+		add(Exit);
+		add(Multi);
+		add(Room);
+		setVisible(true);
 		start();
 	}
 
@@ -117,28 +137,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		play.loop(-1);
 	}
 
-	private void init() {
-		setTitle("Tower Denfense");
-		setResizable(false);
-		setLayout(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(screenSizeX, screenSizeY);
-		setJMenuBar(menu);
-		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Room.setBounds(screenSizeX / 2 - 125, 250, 250, 50);
-		Room.addActionListener(this);
-		Multi.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Multi.setBounds(screenSizeX / 2 - 125, 330, 250, 50);
-		Multi.addActionListener(this);
-		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
-		Exit.addActionListener(this);
-		add(Exit);
-		add(Multi);
-		add(Room);
-		setVisible(true);
-	}
-
 	private void start() {
 		// game panel
 		pStart = new JPanel();
@@ -147,8 +145,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 		// my tower panel
 		myTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
+		if(!(myTowerImg.getImage()==null))
+			System.out.println("fuxk");
 		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
-
+		//myTower.setBackground(Color.BLACK);
 		// enemy tower panel
 		eneTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
 		eneTower.setBounds(screenSizeX * 16 / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
@@ -208,10 +208,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			remove(Room);
 			this.getContentPane().add(pStart);
 			this.paintComponents(getGraphics());
-			multiplay();
-			msgCheck.start();
-			anime.start();
-			nekomove.start();
+			//multiplay();
+			//msgCheck.start();
+			//anime.start();
+			//nekomove.start();
 		}
 		if (e.getSource() == nekomove) {
 			for (int i = 0; i < God.soldier.size(); i++)
@@ -219,7 +219,11 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			for (int i = 0; i < enemy.soldier.size(); i++)
 				enemy.soldier.get(i)
 						.setPositionX(enemy.soldier.get(i).getPositionX() + enemy.soldier.get(i).getMoveSpeed());
-
+		}
+		if(e.getSource()==collistion){
+			/*for(int i =0;i<God.soldier.size();i++)
+				for(int j=0;j<enemy.soldier.size();j++)
+					if(God.soldier.get(i).getPositionX()+God.soldier.get(i)*/
 		}
 		if (e.getSource() == msgCheck) {
 			String s;
@@ -351,11 +355,12 @@ class BackgroundPanel extends JPanel {
 	private int sizeX;
 	private int sizeY;
 
-	public BackgroundPanel(Image im, int sizeX, int sizeY) {
+	public BackgroundPanel(Image img, int sizeX, int sizeY) {
 		this.img = img;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 		this.setOpaque(true);
+		System.out.println("hi");
 	}
 
 	// Draw the back ground.

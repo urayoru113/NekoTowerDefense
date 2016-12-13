@@ -9,27 +9,38 @@ import java.awt.Image;
  *
  */
 public class Neko {
-	private int hp, mp, kb;
+	private int hp, mp, kb, damage, defense;
 	private int moveSpeed, backSpeed;
 	private int type, level, alive;
 	private int positionX;
 	private int heigth, width;
-	Image image;
+	private int hitRange;
+	private Image image;
 
 	Neko() {
 
 	}
 
-	Neko(int type) {
-		if (type == 1) {
+	Neko(int kind) {
+		if (kind == 1) {
 			hp = 100;
 			moveSpeed = 1;
-			this.type = type;
+			type = type;
 			level = 1;
 			positionX = 0;
 			width = 0;
 			heigth = 0;
+			hitRange = 5;
+			defense = 1;
 		}
+	}
+
+	public int getHitRange() {
+		return hitRange;
+	}
+
+	public void setHitRange(int hitRange) {
+		this.hitRange = hitRange;
 	}
 
 	public int getWidth() {
@@ -66,5 +77,23 @@ public class Neko {
 
 	public int getMoveSpeed() {
 		return moveSpeed;
+	}
+
+	public void move() {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				positionX -= 10;
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}).start();
 	}
 }
