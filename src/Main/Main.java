@@ -225,9 +225,9 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		}
 		if (e.getSource() == Room) {
 			this.setLayout(null);
-			//remove(Multi);
-			//remove(Exit);
-			//remove(Room);
+			remove(Multi);
+			remove(Exit);
+			remove(Room);
 			this.getContentPane().add(pStart);
 			this.paintComponents(getGraphics());
 			//multiplay();
