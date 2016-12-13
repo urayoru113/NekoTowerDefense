@@ -1,7 +1,6 @@
 package Main;
 
-import java.io.*;
-
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -26,7 +25,7 @@ public class Client {
 			System.out.print("connect successd");
 		}
 	}
-	
+
 	public void sendpkg(){
 		new Thread(new Runnable() {
 			DataOutputStream output;
@@ -45,7 +44,7 @@ public class Client {
 					try {
 						while (sendMsg != "") {
 							synchronized (this) {
-								
+
 								System.out.println("\nClient" + sendMsg);
 								output.writeUTF(sendMsg);
 								output.flush();
@@ -60,14 +59,21 @@ public class Client {
 			}
 		}).start();
 	}
+	/*
+	 * chat method
+	 */
 	public void send(String type, String msg) {
 		this.sendMsg += type + "&8o" + msg + "&9o";
 	}
-
-	public void send(String type, int num, String ability, int n) {
-		this.sendMsg += type + "&8o" + num + "&8o" + ability + "&8o" + n + "&9o";
+	/*
+	 * 
+	 */
+	public void send(String type, String method, int n) {
+		this.sendMsg += type + "&8o"  + method + "&8o" + n + "&9o";
 	}
-
+	/*
+	 * 
+	 */
 	public void send(String type, int n) {
 		this.sendMsg += type + "&8o" + n + "&9o";
 	}

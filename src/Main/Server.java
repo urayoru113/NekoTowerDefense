@@ -11,6 +11,7 @@ public class Server {
 	private final int port = 8888;
 	private String[] getMsg;
 	private String Msg = "";
+	private int Soldier = 0;//if 0 =null
 
 	/* open server */
 	public Server() {
@@ -68,17 +69,37 @@ public class Server {
 			System.out.println(g);
 		for (String getMsg : s) {
 			this.getMsg = getMsg.split("&8o");
-			for(String j:this.getMsg)
-			System.out.println(j);
+			for (String j : this.getMsg)
+				System.out.println(j);
 			switch (this.getMsg[0]) {
-			case "message":
+			case "Message":
 				Msg = this.getMsg[1];
 				break;
+			case "Neko":
+				switch (this.getMsg[1]) {
+				case "Add":
+					Soldier = addSoldier(this.getMsg[2]);
+					break;
+				}
+				break;
+
 			}
 		}
 	}
+
+
 	public String message() {
 		return Msg;
+	}
+
+	public int addSoldier(String type) {
+		return Integer.parseInt(type);
+	}
+	public int getSoldier(){
+		return Soldier;
+	}
+	public void resetSoldier(){
+		Soldier=0;
 	}
 	public void resetMsg() {
 		Msg = "";
