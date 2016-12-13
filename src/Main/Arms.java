@@ -12,7 +12,7 @@ public class Arms {
 	private int gold;
 	private int armLevel;//
 	private int goldLevel;//
-	private Neko []soldier = new Neko[20];;//add soldier(neko) into arrayList
+	private ArrayList<Neko>soldier = new ArrayList<>();;//add soldier(neko) into arrayList
 	//initialize
 	Arms() {
 		gold=100;

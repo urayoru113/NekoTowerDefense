@@ -39,7 +39,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Color emeFontColor = Color.red;
 	String myName = "A";
 	String emeName = "B";
-	ImageIcon Tower = new ImageIcon("myTower");
+	ImageIcon myTowerImg = new ImageIcon("src//img//myTower");
 	JPanel pStart;
 
 	// JButton Exit = new JButton(new ImageIcon(""));
@@ -56,47 +56,35 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Arms God = new Arms();
 	Arms enermy = new Arms();
 	Timer msgCheck = new Timer(50, this);// set counter
-	Timer anime = new Timer(15, this);// set counte
+	Timer anime = new Timer(1, this);// set counte
 	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
 	Server S;
 	Client C;
-	BackgroundPanel aa;
+	BackgroundPanel myTower,eneTower;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		new Main(1);
+		new Main();
 	}
 
-	public Main() {
 
-	}
-
-	public Main(int i) {
+	 Main() {
 		init(); // initialize
 		start();
 	}
 
-	public void test() {
-		Graphics g = this.getGraphics();
 
-		/*
-		 * while (true)
-		 */ {
-			update(g);
-		}
-
-	}
-
-	int i = 0;
 
 	public void paintFight(Graphics g) {
-		g.drawLine(0, 120, screenSizeX * 6 / 10, i++);
-		g.drawString("HI XD 你好 " + i, 0, 120);
+		g.setColor(Color.GREEN);
+		g.fillRect(0,0,100000,100000);
+		g.setColor(Color.BLACK);
+		//for(int i;i<)
 	}
 
 	public void update(Graphics g)// double buffer
 	{
-		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY * 7 / 9);
+		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY *  12/ 17);
 		Graphics gBuffer = bufferImage.getGraphics();
 		if (gBuffer != null)
 			paintFight(gBuffer);
@@ -136,41 +124,26 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		add(Exit);
 		add(Multi);
 		add(Room);
-		aa = new BackgroundPanel(Tower.getImage(), screenSizeY / 10,screenSizeY * 4 / 9);
-		aa.setSize(100,100);
-		add(aa);
 		setVisible(true);
 	}
 
 	private void start() {
 		// game panel
-	
-
 		pStart = new JPanel();
 		pStart.setSize(screenSizeX, screenSizeY);
-		aa = new BackgroundPanel(Tower.getImage(), screenSizeY / 10,screenSizeY * 4 / 9);
 		pStart.setLayout(null);// cancel all set
-		aa.setBounds(screenSizeX / 10, screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
-		// my tower panel
-		/*
-		 * JPanel pMytower = new JPanel(); pMytower.setBounds(screenSizeX / 10,
-		 * screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
-		 * pMytower.setBackground(Color.BLUE);	 
-		pStart.add(pMytower);
-*/
-		//pStart.add(aa);
+		myTower = new BackgroundPanel(myTowerImg.getImage(), 440/2,451/2);
+		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 440/2, 451/2);
 		// emegy tower panel
-		JPanel pEmeTower = new JPanel();
-		pEmeTower.setBounds(screenSizeX * 8 / 10, screenSizeY * 1 / 3, screenSizeX / 10, screenSizeY * 4 / 9);
-		pEmeTower.setBackground(Color.BLUE);
-		pStart.add(pEmeTower);
-
+		eneTower = new BackgroundPanel(myTowerImg.getImage(), 440/2,451/2);
+		eneTower.setBounds(screenSizeX *16/ 20, screenSizeY * 1 / 3, 440/2, 451/2);
 		// my hp label
 		JLabel jMyHp = new JLabel(God.getHp() + " / 1000");
 		jMyHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyHp.setBackground(Color.red);
 		pStart.add(jMyHp);
-
+		pStart.add(myTower);
+		pStart.add(eneTower);
 		// make a communication Label
 		for (int i = 0; i < 7; i++) {
 			msgLabel[i] = new JLabel(strMsg[i]);
@@ -182,7 +155,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
 		inputText.addKeyListener(this);
 		pStart.add(inputText);
-
 	}
 
 	/* update communication label */
@@ -241,8 +213,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			this.getContentPane().add(pStart);
 			this.paintComponents(getGraphics());
 			multiplay();
-			test();
 			msgCheck.start();
+			anime.start();
 		}
 
 		if (e.getSource() == msgCheck) {
@@ -251,6 +223,9 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				communication(emeName + ": " + S.message());
 				S.resetMsg();
 			}
+		}
+		if (e.getSource() == msgCheck) {
+			update(getGraphics());
 		}
 	}
 
