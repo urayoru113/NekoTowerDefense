@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 /**
  * player can choose different kinds of arms
- * 
+ *
  * @author jack
  *
  *******************************************/
@@ -12,9 +12,10 @@ public class Arms {
 	private int gold;
 	private int armLevel;//
 	private int goldLevel;//
-	private Neko []soldier = new Neko[20];;//add soldier(neko) into arrayList
+	ArrayList<Neko>soldier;//add soldier(neko) into arrayList
 	//initialize
 	Arms() {
+		soldier = new ArrayList<>();
 		gold=100;
 		hp=1000;
 		goldLevel=1;
@@ -26,11 +27,11 @@ public class Arms {
 	}
 	//add soldier
 	public void addSoldier(int type) {
-		//|soldier
+		soldier.add(new Neko(type));
 	}
 
 	public void removeSoldier(int position) {
-
+		soldier.remove(position);
 	}
 
 	public void setHp(int hp) {

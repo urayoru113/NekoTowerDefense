@@ -1,7 +1,6 @@
 package Main;
 
-import java.io.*;
-
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -11,7 +10,7 @@ public class Client {
 	/* initailze var */
 	private Socket socket;
 	final int port = 8888;
-	private static final String addr = "127.0.0.1";
+	private static final String addr = "169.254.18.107";
 	private String sendMsg = "";
 
 	// connect server
@@ -26,7 +25,7 @@ public class Client {
 			System.out.print("connect successd");
 		}
 	}
-	
+
 	public void sendpkg(){
 		new Thread(new Runnable() {
 			DataOutputStream output;
@@ -45,7 +44,7 @@ public class Client {
 					try {
 						while (sendMsg != "") {
 							synchronized (this) {
-								
+
 								System.out.println("\nClient" + sendMsg);
 								output.writeUTF(sendMsg);
 								output.flush();
