@@ -19,8 +19,7 @@ public class Neko {
 	Neko() {
 
 	}
-
-	Neko(int type) {
+	Neko(int type){
 		if (type == 1) {
 			hp = 100;
 			moveSpeed = 10;
@@ -29,7 +28,6 @@ public class Neko {
 			positionX = 0;
 		}
 	}
-
 	public void setHp(int hp) {
 		this.hp = hp;
 	}
@@ -53,6 +51,7 @@ public class Neko {
 	public int getPositionX() {
 		return positionX;
 	}
+
 	public int getMoveSpeed() {
 		return moveSpeed;
 	}
