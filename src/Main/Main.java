@@ -37,7 +37,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	String myName = "A";
 	String emeName = "B";
 
-	ImageIcon myTowerImg = new ImageIcon("src//img//myTower.png");
+	ImageIcon myTowerImg = new ImageIcon("src//img//rev_1.png");
 
 	JPanel pStart;
 	// JButton Exit = new JButton(new ImageIcon(""));
@@ -61,9 +61,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Image bufferImage;
 	Arms God = new Arms();
 	Arms enemy = new Arms();
-	Timer msgCheck = new Timer(1, this);// set counter
+	Timer msgCheck = new Timer(50, this);// set counter
 	Timer anime = new Timer(5, this);// set counte
-	Timer nekomove = new Timer(30, this);// set counte
+	Timer nekomove = new Timer(30, this);// set move time
+	Timer collistion = new Timer(5, this);
 	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
 	Server S;
 	Client C;
@@ -75,7 +76,26 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	}
 
 	Main() {
-		init(); // initialize
+		// initialize
+		setTitle("Tower Denfense");
+		setResizable(false);
+		setLayout(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(screenSizeX, screenSizeY);
+		setJMenuBar(menu);
+		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Room.setBounds(screenSizeX / 2 - 125, 250, 250, 50);
+		Room.addActionListener(this);
+		Multi.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Multi.setBounds(screenSizeX / 2 - 125, 330, 250, 50);
+		Multi.addActionListener(this);
+		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
+		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
+		Exit.addActionListener(this);
+		add(Exit);
+		add(Multi);
+		add(Room);
+		setVisible(true);
 		start();
 		repaint();
 	}
@@ -88,8 +108,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			g.fillRect(0 + God.soldier.get(i).getPositionX(), 0, 20, 20);
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < enemy.soldier.size(); i++)
-			g.fillRect(screenSizeX / 10 * 6 - enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getWidth(), 0,
-					20, 20);
+			g.fillRect(enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getWidth(), 0, 20, 20);
 		g.setColor(Color.BLACK);
 	}
 
@@ -118,28 +137,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		play.loop(-1);
 	}
 
-	private void init() {
-		setTitle("Tower Denfense");
-		setResizable(false);
-		setLayout(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(screenSizeX, screenSizeY);
-		setJMenuBar(menu);
-		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Room.setBounds(screenSizeX / 2 - 125, 250, 250, 50);
-		Room.addActionListener(this);
-		Multi.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Multi.setBounds(screenSizeX / 2 - 125, 330, 250, 50);
-		Multi.addActionListener(this);
-		Exit.setFont(new Font("SansSerif", Font.PLAIN, 18));
-		Exit.setBounds(screenSizeX / 2 - 125, 410, 250, 50);
-		Exit.addActionListener(this);
-		add(Exit);
-		add(Multi);
-		add(Room);
-		setVisible(true);
-	}
-
 	private void start() {
 		// game panel
 		pStart = new JPanel();
@@ -148,8 +145,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 		// my tower panel
 		myTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
+		if (!(myTowerImg.getImage() == null))
+			System.out.println("fuxk");
 		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
-
+		// myTower.setBackground(Color.BLACK);
 		// enemy tower panel
 		eneTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
 		eneTower.setBounds(screenSizeX * 16 / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
@@ -159,23 +158,20 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		jMyTowerHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyTowerHp.setBackground(Color.red);
 		pStart.add(jMyTowerHp);
-		pStart.add(myTower);
-		pStart.add(eneTower);
 
 		// my gold label
 		jMyGold = new JLabel("Gold: " + God.getGold());
 		jMyGold.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 120, 200, 30);
 		jMyGold.setBackground(Color.red);
 		pStart.add(jMyGold);
-		pStart.add(myTower);
-		pStart.add(eneTower);
+		// pStart.add(myTower);
+		// pStart.add(eneTower);
 
 		// make battle button
 		neko = new JButton("Neko");
 		neko.setBounds(0, screenSizeY * 7 / 9, screenSizeX * 1 / 9, screenSizeY * 2 / 9);
 		neko.addActionListener(this);
 		pStart.add(neko);
-
 		// make a communication Label
 		for (int i = 0; i < 7; i++) {
 			msgLabel[i] = new JLabel(strMsg[i]);
@@ -209,19 +205,90 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			remove(Room);
 			this.getContentPane().add(pStart);
 			this.paintComponents(getGraphics());
-			//multiplay();
-			//msgCheck.start();
-			//anime.start();
-			//nekomove.start();
+
+			multiplay();
+			msgCheck.start();
+			anime.start();
+			nekomove.start();
+			collistion.start();
 		}
+
+		/*
+		 * action 0 remove soldier,1 move, 2 attack,
+		 ******************************************************************************/
 		if (e.getSource() == nekomove) {
+			int godMaxPositionX = 0, godMaxIndex = 30;
+			int enemyMaxPositionX = 99999, enemyMaxIndex = 30;
+
+			/* save the most front soldier information */
 			for (int i = 0; i < God.soldier.size(); i++)
-				God.soldier.get(i).setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
+				if (godMaxPositionX < God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth()) {
+					godMaxPositionX = God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth();
+					godMaxIndex = i;
+				}
 			for (int i = 0; i < enemy.soldier.size(); i++)
-				enemy.soldier.get(i)
-						.setPositionX(enemy.soldier.get(i).getPositionX() + enemy.soldier.get(i).getMoveSpeed());
+				if (enemyMaxPositionX > enemy.soldier.get(i).getPositionX()) {
+					enemyMaxPositionX = enemy.soldier.get(i).getPositionX();
+					enemyMaxIndex = i;
+				}
+
+			/* my soldier action */
+			for (int i = 0; i < God.soldier.size(); i++) {
+				
+				if(enemyMaxIndex == 30)
+					God.soldier.get(i).setAction(1);
+
+				if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getHitRange() >= enemyMaxPositionX) {
+					God.soldier.get(i).setAction(2);
+				}
+				
+				if(God.soldier.get(i).getHp() <= 0){
+					God.soldier.remove(i);
+					continue;
+				}
+
+				/* move */
+				if (God.soldier.get(i).getAction() == 1) {
+					God.soldier.get(i)
+							.setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
+				}
+				/* attack */
+				if (God.soldier.get(i).getAction() == 2) {
+					enemy.soldier.get(enemyMaxIndex).setHp(enemy.soldier.get(enemyMaxIndex).getHp()
+							- God.soldier.get(i).getDamage());
+				}
+			}
+
+			/* enemy soldier action */
+			for (int i = 0; i < enemy.soldier.size(); i++) {
+				
+				if(godMaxIndex == 30)
+					enemy.soldier.get(i).setAction(1);
+				
+				if (enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getHitRange() <= godMaxPositionX) {
+					enemy.soldier.get(i).setAction(2);
+				}
+				
+				if(enemy.soldier.get(i).getHp() <= 0){
+					enemy.soldier.remove(i);
+					continue;
+				}
+
+				/* move */
+				if (enemy.soldier.get(i).getAction() == 1) {
+					enemy.soldier.get(i)
+							.setPositionX(enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getMoveSpeed());
+				}
+				/* attack */
+				if (enemy.soldier.get(i).getAction() == 2) {
+					God.soldier.get(enemyMaxIndex).setHp(God.soldier.get(godMaxIndex).getHp()
+							- enemy.soldier.get(i).getDamage());
+				}
+
+			}
 
 		}
+
 		if (e.getSource() == msgCheck) {
 			String s;
 			if (!(S.message() == "")) {
@@ -230,6 +297,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			}
 			if (S.getSoldier() > 0) {
 				enemy.addSoldier(S.getSoldier());
+				enemy.soldier.get(enemy.soldier.size() - 1)
+						.setPositionX(screenSizeX * 6 / 10 - enemy.soldier.get(enemy.soldier.size() - 1).getWidth());
 				S.resetSoldier();
 			}
 		}
@@ -357,6 +426,7 @@ class BackgroundPanel extends JPanel {
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
 		this.setOpaque(true);
+		System.out.println("hi");
 	}
 
 	// Draw the back ground.

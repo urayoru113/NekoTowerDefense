@@ -30,10 +30,6 @@ public class Arms {
 		soldier.add(new Neko(type));
 	}
 
-	public void removeSoldier(int position) {
-		soldier.remove(position);
-	}
-
 	public void setHp(int hp) {
 		this.hp = hp;
 	}
