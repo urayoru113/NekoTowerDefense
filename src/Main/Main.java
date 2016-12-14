@@ -77,6 +77,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Main() {
 		init(); // initialize
 		start();
+		repaint();
 	}
 
 	public void paintFight(Graphics g) {
@@ -208,10 +209,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			remove(Room);
 			this.getContentPane().add(pStart);
 			this.paintComponents(getGraphics());
-			multiplay();
-			msgCheck.start();
-			anime.start();
-			nekomove.start();
+			//multiplay();
+			//msgCheck.start();
+			//anime.start();
+			//nekomove.start();
 		}
 		if (e.getSource() == nekomove) {
 			for (int i = 0; i < God.soldier.size(); i++)
@@ -351,7 +352,7 @@ class BackgroundPanel extends JPanel {
 	private int sizeX;
 	private int sizeY;
 
-	public BackgroundPanel(Image im, int sizeX, int sizeY) {
+	public BackgroundPanel(Image img, int sizeX, int sizeY) {
 		this.img = img;
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
