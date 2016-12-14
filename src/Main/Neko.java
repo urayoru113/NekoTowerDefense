@@ -10,9 +10,9 @@ import java.awt.Image;
  */
 public class Neko {
 	private int hp, mp, kb, damage, defense;
-	private int moveSpeed, backSpeed;
-	private int type, level, alive;
-	private int positionX;
+	private int moveSpeed, backSpeed, hitMove;
+	private int type, level, action, skill;
+	private int positionX, positionY, hitTime, hitCd;
 	private int heigth, width;
 	private int hitRange;
 	private Image image;
@@ -23,16 +23,48 @@ public class Neko {
 
 	Neko(int kind) {
 		if (kind == 1) {
+			action = 1;// 0 stop
 			hp = 100;
 			moveSpeed = 1;
-			type = type;
+			type = kind;
 			level = 1;
+			damage = 10;
 			positionX = 0;
 			width = 0;
 			heigth = 0;
-			hitRange = 5;
+			hitRange = 30;
 			defense = 1;
+			hitTime = 30;// Timer
+			hitCd = 30;// CD
 		}
+	}
+
+	public int getHitMove() {
+		return hitMove;
+	}
+
+	public void setHitMove(int hitMove) {
+		this.hitMove = hitMove;
+	}
+
+	public void setHitTime(int hitTime) {
+		this.hitTime = hitTime;
+	}
+
+	public int getHitTime() {
+		return hitTime;
+	}
+
+	public int getHitCd() {
+		return getHitCd();
+	}
+
+	public int getAction() {
+		return action;
+	}
+
+	public void setAction(int action) {
+		this.action = action;
 	}
 
 	public int getHitRange() {
@@ -74,26 +106,16 @@ public class Neko {
 	public int getPositionX() {
 		return positionX;
 	}
+	public void setPositionY(int positionX) {
+		this.positionY = positionY;
+	}
 
+	public int getPositionY() {
+		return positionY;
+	}
+		
 	public int getMoveSpeed() {
 		return moveSpeed;
 	}
 
-	public void move() {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				positionX -= 10;
-				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		}).start();
-	}
 }

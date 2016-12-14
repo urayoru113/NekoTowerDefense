@@ -64,7 +64,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Timer msgCheck = new Timer(50, this);// set counter
 	Timer anime = new Timer(5, this);// set counte
 	Timer nekomove = new Timer(30, this);// set counte
-	Timer collistion = new Timer(30,this);
+	Timer collistion = new Timer(5, this);
 	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
 	Server S;
 	Client C;
@@ -145,10 +145,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 		// my tower panel
 		myTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
-		if(!(myTowerImg.getImage()==null))
+		if (!(myTowerImg.getImage() == null))
 			System.out.println("fuxk");
 		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
-		//myTower.setBackground(Color.BLACK);
+		// myTower.setBackground(Color.BLACK);
 		// enemy tower panel
 		eneTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
 		eneTower.setBounds(screenSizeX * 16 / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
@@ -158,23 +158,20 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		jMyTowerHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
 		jMyTowerHp.setBackground(Color.red);
 		pStart.add(jMyTowerHp);
-		pStart.add(myTower);
-		pStart.add(eneTower);
 
 		// my gold label
 		jMyGold = new JLabel("Gold: " + God.getGold());
 		jMyGold.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 120, 200, 30);
 		jMyGold.setBackground(Color.red);
 		pStart.add(jMyGold);
-		pStart.add(myTower);
-		pStart.add(eneTower);
+		// pStart.add(myTower);
+		// pStart.add(eneTower);
 
 		// make battle button
 		neko = new JButton("Neko");
 		neko.setBounds(0, screenSizeY * 7 / 9, screenSizeX * 1 / 9, screenSizeY * 2 / 9);
 		neko.addActionListener(this);
 		pStart.add(neko);
-
 		// make a communication Label
 		for (int i = 0; i < 7; i++) {
 			msgLabel[i] = new JLabel(strMsg[i]);
@@ -208,22 +205,46 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			remove(Room);
 			this.getContentPane().add(pStart);
 			this.paintComponents(getGraphics());
-			//multiplay();
-			//msgCheck.start();
-			//anime.start();
-			//nekomove.start();
+			multiplay();
+			msgCheck.start();
+			anime.start();
+			nekomove.start();
+			collistion.start();
 		}
 		if (e.getSource() == nekomove) {
-			for (int i = 0; i < God.soldier.size(); i++)
-				God.soldier.get(i).setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
-			for (int i = 0; i < enemy.soldier.size(); i++)
-				enemy.soldier.get(i)
-						.setPositionX(enemy.soldier.get(i).getPositionX() + enemy.soldier.get(i).getMoveSpeed());
+			for (int i = 0; i < God.soldier.size(); i++) {
+				if (God.soldier.get(i).getAction() == 1) {
+					God.soldier.get(i)
+							.setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
+				}
+				else if (God.soldier.get(i).getAction() == 0) {
+					God.soldier.get(i)
+							.setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
+				}
+			}
+			for (int i = 0; i < enemy.soldier.size(); i++) {
+				if (enemy.soldier.get(i).getAction() ==1) {
+					enemy.soldier.get(i)
+							.setPositionX(enemy.soldier.get(i).getPositionX() + enemy.soldier.get(i).getMoveSpeed());
+				}
+				else if (enemy.soldier.get(i).getAction() == 0) {
+					enemy.soldier.get(i)
+							.setPositionX(enemy.soldier.get(i).getPositionX() + enemy.soldier.get(i).getMoveSpeed());
+				}
+			}
 		}
-		if(e.getSource()==collistion){
-			/*for(int i =0;i<God.soldier.size();i++)
-				for(int j=0;j<enemy.soldier.size();j++)
-					if(God.soldier.get(i).getPositionX()+God.soldier.get(i)*/
+		if (e.getSource() == collistion) {
+			for (int i = 0; i < God.soldier.size(); i++)
+				for (int j = 0; j < enemy.soldier.size(); j++) {
+					if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getHitRange() > screenSizeX / 10 * 6
+							- enemy.soldier.get(j).getPositionX() - enemy.soldier.get(j).getWidth()) {
+						God.soldier.get(i).setAction(0);
+					}
+					if (God.soldier.get(i).getPositionX() > screenSizeX / 10 * 6 - enemy.soldier.get(j).getPositionX()
+							- enemy.soldier.get(j).getWidth() - enemy.soldier.get(j).getHitRange()) {
+						enemy.soldier.get(j).setAction(0);
+					}
+				}
 		}
 		if (e.getSource() == msgCheck) {
 			String s;
