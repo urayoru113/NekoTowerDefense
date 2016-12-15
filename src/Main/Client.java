@@ -10,7 +10,7 @@ public class Client {
 	/* initailze var */
 	private Socket socket;
 	final int port = 8888;
-	private static final String addr = "169.254.18.107";
+	private static final String addr = "127.0.0.1";
 	private String sendMsg = "";
 
 	// connect server

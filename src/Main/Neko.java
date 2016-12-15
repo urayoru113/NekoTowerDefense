@@ -15,7 +15,6 @@ public class Neko {
 	private int positionX, positionY, hitTime, hitCd;
 	private int heigth, width;
 	private int hitRange;
-	private Image image;
 
 	Neko() {
 
@@ -30,9 +29,9 @@ public class Neko {
 			level = 1;
 			damage = 5;
 			positionX = 0;
-			width = 0;
-			heigth = 0;
-			hitRange = 30;
+			width = 130;
+			heigth = 165;
+			hitRange = 10;
 			defense = 1;
 			hitTime = 30;// Timer
 			hitCd = 30;// CD
