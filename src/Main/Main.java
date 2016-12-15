@@ -97,7 +97,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		add(Room);
 		setVisible(true);
 		start();
-		repaint();
 	}
 
 	public void paintFight(Graphics g) {
@@ -234,15 +233,15 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 			/* my soldier action */
 			for (int i = 0; i < God.soldier.size(); i++) {
-				
-				if(enemyMaxIndex == 30)
+
+				if (enemyMaxIndex == 30)
 					God.soldier.get(i).setAction(1);
 
 				if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getHitRange() >= enemyMaxPositionX) {
 					God.soldier.get(i).setAction(2);
 				}
-				
-				if(God.soldier.get(i).getHp() <= 0){
+
+				if (God.soldier.get(i).getHp() <= 0) {
 					God.soldier.remove(i);
 					continue;
 				}
@@ -254,22 +253,22 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				}
 				/* attack */
 				if (God.soldier.get(i).getAction() == 2) {
-					enemy.soldier.get(enemyMaxIndex).setHp(enemy.soldier.get(enemyMaxIndex).getHp()
-							- God.soldier.get(i).getDamage());
+					enemy.soldier.get(enemyMaxIndex)
+							.setHp(enemy.soldier.get(enemyMaxIndex).getHp() - God.soldier.get(i).getDamage());
 				}
 			}
 
 			/* enemy soldier action */
 			for (int i = 0; i < enemy.soldier.size(); i++) {
-				
-				if(godMaxIndex == 30)
+
+				if (godMaxIndex == 30)
 					enemy.soldier.get(i).setAction(1);
-				
+
 				if (enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getHitRange() <= godMaxPositionX) {
 					enemy.soldier.get(i).setAction(2);
 				}
-				
-				if(enemy.soldier.get(i).getHp() <= 0){
+
+				if (enemy.soldier.get(i).getHp() <= 0) {
 					enemy.soldier.remove(i);
 					continue;
 				}
@@ -281,8 +280,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				}
 				/* attack */
 				if (enemy.soldier.get(i).getAction() == 2) {
-					God.soldier.get(enemyMaxIndex).setHp(God.soldier.get(godMaxIndex).getHp()
-							- enemy.soldier.get(i).getDamage());
+					God.soldier.get(enemyMaxIndex)
+							.setHp(God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(i).getDamage());
 				}
 
 			}
@@ -300,6 +299,14 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				enemy.soldier.get(enemy.soldier.size() - 1)
 						.setPositionX(screenSizeX * 6 / 10 - enemy.soldier.get(enemy.soldier.size() - 1).getWidth());
 				S.resetSoldier();
+			}
+			if (S.getIndex() != -1) {
+				if (S.getHp() != -1)
+					enemy.soldier.get(S.getIndex()).setHp(S.getHp());
+				if (S.getPosition() != -1)
+					enemy.soldier.get(S.getIndex()).setPositionX(
+							screenSizeX * 6 / 10 - S.getPosition() - enemy.soldier.get(S.getIndex()).getWidth());
+				S.resetSoldierStatus();
 			}
 		}
 		if (e.getSource() == anime) {
