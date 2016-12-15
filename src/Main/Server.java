@@ -87,6 +87,7 @@ public class Server {
 				default:
 					Index = Integer.parseInt(this.getMsg[1]);
 					switch (this.getMsg[2]) {
+					//HP
 					case "Hp":
 						Hp = Integer.parseInt(this.getMsg[3]);
 						break;
