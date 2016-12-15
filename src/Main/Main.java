@@ -311,7 +311,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				}
 			}
 		}
-
+		//anime
 		if (e.getSource() == anime) {
 			update(getGraphics());
 		}
