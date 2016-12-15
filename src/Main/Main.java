@@ -11,7 +11,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -63,10 +68,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Image bufferImage;
 	Arms God = new Arms();
 	Arms enemy = new Arms();
-	Timer msgCheck = new Timer(5, this);// set counter
 	Timer anime = new Timer(5, this);// set counte
 	Timer nekomove = new Timer(30, this);// set move time
-	Timer collistion = new Timer(5, this);
 	String[] strMsg = { "", "", "", "", "", "", "", "", "", "" };// communication
 																	// message
 	Server S;
@@ -211,10 +214,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			this.paintComponents(getGraphics());
 
 			multiplay();
-			msgCheck.start();
 			anime.start();
 			nekomove.start();
-			collistion.start();
 		}
 
 		/*
@@ -297,46 +298,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 					}
 				}
 			}
-
 		}
 
-		if (e.getSource() == msgCheck) {
-			synchronized (this) {
-				String s;
-				if (!(S.message() == "")) {
-					communication(emeName + ": " + S.message());
-					msgLabel[8].setForeground(emeFontColor);
-					S.resetMsg();
-				}
-				if (S.getSoldier() > 0) {
-					enemy.addSoldier(S.getSoldier());
-					enemy.soldier.get(enemy.soldier.size() - 1).setPositionX(
-							screenSizeX * 6 / 10 - enemy.soldier.get(enemy.soldier.size() - 1).getWidth());
-					S.resetSoldier();
-				}
-				if (S.getIndex() != -1) {
-					if (godMaxIndex != 30) {
-						if (S.getHp() != -1)
-							enemy.soldier.get(S.getIndex()).setHp(S.getHp());
-						if (S.getPosition() != -1)
-							enemy.soldier.get(S.getIndex()).setPositionX(screenSizeX * 6 / 10 - S.getPosition()
-									- enemy.soldier.get(S.getIndex()).getWidth());
-
-						if (S.getAction() == 2) {
-
-							God.soldier.get(godMaxIndex).setHp(
-									God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(S.getIndex()).getDamage());
-						}
-						if (S.getAction() == 0) {
-							System.out.println("i dead");
-							enemy.soldier.get(S.getIndex()).setPositionX(screenSizeX * 6 / 10);
-							enemy.soldier.remove(S.getIndex());
-						}
-						S.resetSoldierStatus();
-					}
-				}
-			}
-		}
 		if (e.getSource() == anime) {
 			update(getGraphics());
 		}
@@ -419,6 +382,172 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		}
 		strMsg[9] = str;
 		msgLabel[9].setText(strMsg[9]);
+	}
+	class Server {
+		/* initialize var */
+		private ServerSocket server;
+		private Socket socket;
+		private final int port = 8888;
+		private String[] getMsg;
+		private String Msg = "";
+		private int Soldier = 0, Hp = -1, Position = -1, Index = -1, TowerHp = -1;
+		private int Action = -1;
+
+		/* open server */
+		public Server() {
+			try {
+				server = new ServerSocket(port);
+			} catch (java.io.IOException e) {
+				System.out.println(e.getMessage());
+			}
+			if (server != null) {
+				System.out.println("start server");
+			}
+
+		}
+
+		public void sendpkg() {
+			new Thread(new Runnable() {
+				DataInputStream input;
+				DataOutputStream output;
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					while (true) {
+						try {
+							input = new DataInputStream(socket.getInputStream());
+						} catch (Exception e) {
+							continue;
+						}
+						try {
+
+							while (input != null) {
+								synchronized (this) {
+									decode(input.readUTF());
+								}
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+
+						}
+					}
+				}
+			}).start();
+		}
+
+		/* decode packet */
+		public void decode(String packet) {
+			String[] s = packet.split("&9o");
+			for (String g : s)
+				System.out.println(g);
+			for (String getMsg : s) {
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				this.getMsg = getMsg.split("&8o");
+				/*
+				 * for (String j : this.getMsg) System.out.println(j);
+				 */
+				switch (this.getMsg[0]) {
+				case "Message":
+					Msg = this.getMsg[1];
+					communication(emeName + ": " + S.message());
+					msgLabel[8].setForeground(emeFontColor);
+					break;
+				case "Neko":
+					switch (this.getMsg[1]) {
+					case "Add":
+						enemy.addSoldier(Integer.parseInt(this.getMsg[2]));
+						enemy.soldier.get(enemy.soldier.size() - 1).setPositionX(
+								screenSizeX * 6 / 10 - enemy.soldier.get(enemy.soldier.size() - 1).getWidth());
+						break;
+					case "Remove":
+						Index = Integer.parseInt(this.getMsg[2]);
+						enemy.soldier.remove(Index);
+						break;
+					default:
+						Index = Integer.parseInt(this.getMsg[1]);
+						switch (this.getMsg[2]) {
+						// HP
+						case "Hp":
+							Hp = Integer.parseInt(this.getMsg[3]);
+							enemy.soldier.get(Index).setHp(Hp);
+							break;
+						// position
+						case "Position":
+							Position = Integer.parseInt(this.getMsg[3]);
+							enemy.soldier.get(Index).setPositionX(screenSizeX * 6 / 10 - Position
+									- enemy.soldier.get(Index).getWidth());
+							break;
+						case "Attack":
+							God.soldier.get(godMaxIndex).setHp(
+									God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(Index).getDamage());
+							break;
+
+						}
+						break;
+					}
+					break;
+				case "Tower":
+					switch (this.getMsg[1]) {
+					case "Hp":
+						TowerHp = Integer.parseInt(this.getMsg[2]);
+						break;
+					case "Level":
+						break;
+					}
+				}
+			}
+		}
+
+
+		public String message() {
+			return Msg;
+		}
+
+
+		public void resetMsg() {
+			Msg = "";
+		}
+
+		/* wait client connect */
+		public void waitClient() {
+			try {
+				System.out.println("wait connect");
+				socket = server.accept();
+				System.out.println("Server connect successed");
+				System.out.println("gethost : InetAddress = " + socket.getInetAddress());
+				server.close();
+			} catch (java.io.IOException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		/* get way */
+
+		/* close server socket */
+		public void closeSocket() {
+			try {
+				socket.close();
+			} catch (java.io.IOException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		/* close server */
+		public void closeServer() {
+			try {
+				server.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
