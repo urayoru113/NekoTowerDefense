@@ -45,7 +45,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	String emeName = "B";
 	BackgroundPanel pStart;
 	ImageIcon myTowerImg = new ImageIcon("src//img//N300_neko-slime.png");
-	ImageIcon eneTowerImg= new ImageIcon("src//img//N300_neko-slime_phixr.png");
+	ImageIcon eneTowerImg = new ImageIcon("src//img//N300_neko-slime_phixr.png");
 	ImageIcon backgroundimg = new ImageIcon("src//img//background.png");
 	ImageIcon msgBox = new ImageIcon("src//img//kisakajpg.jpg");
 	ImageIcon myCat = new ImageIcon("src//img//anpo_1_phixr.png");
@@ -311,7 +311,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				}
 			}
 		}
-		//anime
 		if (e.getSource() == anime) {
 			update(getGraphics());
 		}
@@ -319,7 +318,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		if (e.getSource() == neko) {
 			if (God.getGold() >= 300) {
 				God.addSoldier(1);
-				God.setGold(God.getGold()-300);
+				God.setGold(God.getGold() - 300);
 				C.send("Neko", "Add", 1);
 			}
 		}
