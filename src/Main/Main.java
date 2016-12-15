@@ -37,7 +37,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
-	int godMaxPositionX = 0, godMaxIndex = 30;
+	int godMaxPositionX = 0, godMaxIndex = 30;		
 	int enemyMaxPositionX = 99999, enemyMaxIndex = 30;
 	Color myFontColor = Color.blue;
 	Color emeFontColor = Color.red;
@@ -47,6 +47,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	ImageIcon myTowerImg = new ImageIcon("src//img//rev_1.png");
 	ImageIcon backgroundimg = new ImageIcon("src//img//background.png");
 	ImageIcon msgBox = new ImageIcon("src//img//kisakajpg.jpg");
+	ImageIcon myCat = new ImageIcon("src//img//anpo_1_phixr.png");
+	ImageIcon eneCat = new ImageIcon("src//img//anpo_1.png");
 	// JButton Exit = new JButton(new ImageIcon(""));
 	JButton Exit = new JButton("Exit");
 	// JButton Multi = new JButton(new ImageIcon(""));
@@ -106,15 +108,11 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	}
 
 	public void paintFight(Graphics g) {
-		g.setColor(Color.GREEN);
-		g.fillRect(0, 0, 100000, 100000);
-		g.setColor(Color.RED);
+		g.drawImage(backgroundimg.getImage(),-screenSizeX / 5,0,screenSizeX,screenSizeY,this);
 		for (int i = 0; i < God.soldier.size(); i++)
-			g.fillRect(0 + God.soldier.get(i).getPositionX(), 0, 20, 20);
-		g.setColor(Color.BLACK);
+			g.drawImage(myCat.getImage(), God.soldier.get(i).getPositionX(), screenSizeY * 9 / 17-God.soldier.get(i).getHeigth(), God.soldier.get(i).getWidth(), God.soldier.get(i).getHeigth(),this);
 		for (int i = 0; i < enemy.soldier.size(); i++)
-			g.fillRect(enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getWidth(), 0, 20, 20);
-		g.setColor(Color.BLACK);
+			g.drawImage(eneCat.getImage(),enemy.soldier.get(i).getPositionX(), screenSizeY * 9 / 17-enemy.soldier.get(i).getHeigth(), enemy.soldier.get(i).getWidth(), enemy.soldier.get(i).getHeigth(),this);
 	}
 
 	int i = 0;
@@ -129,7 +127,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		else
 			paint(g);
 		gBuffer.dispose();
-		g.drawImage(bufferImage, screenSizeX / 5, 80, null);
+		g.drawImage(bufferImage, screenSizeX / 5, 49, null);
 	}
 
 	void Gamesound() throws Exception {
@@ -250,7 +248,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 					}
 			/* my soldier action */
 			for (int i = 0; i < God.soldier.size(); i++) {
-				synchronized (this) {
+				{
 					if (enemy.soldier.size() == 0)
 						God.soldier.get(i).setAction(1);
 
