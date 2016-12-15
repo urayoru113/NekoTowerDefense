@@ -25,10 +25,10 @@ public class Neko {
 		if (kind == 1) {
 			action = 1;// 0 stop // 1 move // 2 attack
 			hp = 100;
-			moveSpeed = 10;
+			moveSpeed = 1;
 			type = kind;
 			level = 1;
-			damage = 10;
+			damage = 5;
 			positionX = 0;
 			width = 0;
 			heigth = 0;

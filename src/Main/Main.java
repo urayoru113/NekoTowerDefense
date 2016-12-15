@@ -113,7 +113,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			g.fillRect(0 + God.soldier.get(i).getPositionX(), 0, 20, 20);
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < enemy.soldier.size(); i++)
-			g.fillRect(enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getWidth(), 0, 20, 20);
+			g.fillRect(enemy.soldier.get(i).getPositionX(), 0, 20, 20);
 		g.setColor(Color.BLACK);
 	}
 
@@ -284,7 +284,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			/* enemy soldier action */
 
 			for (int i = 0; i < enemy.soldier.size(); i++) {
-				synchronized (this) {
 					if (God.soldier.size() == 0)
 						enemy.soldier.get(i).setAction(1);
 
@@ -297,7 +296,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 								enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getMoveSpeed());
 					}
 				}
-			}
+		
 		}
 
 		if (e.getSource() == anime) {
