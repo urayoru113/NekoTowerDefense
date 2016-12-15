@@ -36,10 +36,10 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Color emeFontColor = Color.red;
 	String myName = "A";
 	String emeName = "B";
-
+	BackgroundPanel pStart;
 	ImageIcon myTowerImg = new ImageIcon("src//img//rev_1.png");
-
-	JPanel pStart;
+	ImageIcon backgroundimg = new ImageIcon("src//img//background.png");
+	ImageIcon msgBox = new ImageIcon("src//img//kisakajpg.jpg");
 	// JButton Exit = new JButton(new ImageIcon(""));
 	JButton Exit = new JButton("Exit");
 	// JButton Multi = new JButton(new ImageIcon(""));
@@ -52,7 +52,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	// the gold
 	JButton goldLabel = new JButton("Gold");
 
-	JLabel[] msgLabel = new JLabel[7];
+	JLabel[] msgLabel = new JLabel[10];
 	JLabel jMyTowerHp;
 	JLabel jMyGold;
 	JTextField inputText = new JTextField("");
@@ -65,10 +65,11 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Timer anime = new Timer(5, this);// set counte
 	Timer nekomove = new Timer(30, this);// set move time
 	Timer collistion = new Timer(5, this);
-	String[] strMsg = { "", "", "", "", "", "", "" };// communication message
+	String[] strMsg = { "", "", "", "", "", "", "", "", "", "" };// communication
+																	// message
 	Server S;
 	Client C;
-	BackgroundPanel myTower, eneTower;
+	BackgroundPanel myTower, eneTower,kisaka;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -138,10 +139,11 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 	private void start() {
 		// game panel
-		pStart = new JPanel();
+		pStart = new BackgroundPanel(backgroundimg.getImage(), screenSizeX, screenSizeY);
 		pStart.setSize(screenSizeX, screenSizeY);
 		pStart.setLayout(null);// cancel all set
-
+		kisaka = new BackgroundPanel(msgBox.getImage(),screenSizeX * 1 / 4,screenSizeY * 22 / 9 / 12);
+		kisaka.setBounds(screenSizeX * 8 / 11, screenSizeY * 13 / 18, screenSizeX/4, screenSizeY * 22 / 9 / 12);
 		// my tower panel
 		myTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
 		if (!(myTowerImg.getImage() == null))
@@ -172,15 +174,16 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		neko.addActionListener(this);
 		pStart.add(neko);
 		// make a communication Label
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 10; i++) {
 			msgLabel[i] = new JLabel(strMsg[i]);
-			msgLabel[i].setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * i / 12,
+			msgLabel[i].setBounds(screenSizeX * 8 / 11, screenSizeY * 13 / 18 + screenSizeY * 2 / 9 * i / 12,
 					screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
 			pStart.add(msgLabel[i]);
 		}
-		inputText.setBounds(screenSizeX * 3 / 4, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12,
+		inputText.setBounds(screenSizeX * 8 / 11, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12,
 				screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
 		inputText.addKeyListener(this);
+		pStart.add(kisaka);
 		pStart.add(inputText);
 	}
 
@@ -207,7 +210,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 			multiplay();
 			msgCheck.start();
-			anime.start();
+			// anime.start();
 			nekomove.start();
 			collistion.start();
 		}
@@ -292,6 +295,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			String s;
 			if (!(S.message() == "")) {
 				communication(emeName + ": " + S.message());
+				msgLabel[8].setForeground(emeFontColor);
 				S.resetMsg();
 			}
 			if (S.getSoldier() > 0) {
@@ -339,9 +343,11 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 		/* set message to emery */
 		if (e.getKeyCode() == KeyEvent.VK_ENTER && !inputText.getText().isEmpty()) {
+			msgLabel[9].setForeground(myFontColor);
 			communication(myName + ": " + inputText.getText());
+			C.send("Message", inputText.getText());
+			inputText.setText("");
 		}
-
 	}
 
 	@Override
@@ -382,17 +388,13 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 	/* update communication label */
 	public void communication(String str) {
-		for (int i = 1; i < 7; i++) {
+		for (int i = 1; i < 10; i++) {
 			strMsg[i - 1] = strMsg[i];
 			msgLabel[i - 1].setForeground(msgLabel[i].getForeground());
 			msgLabel[i - 1].setText(strMsg[i - 1]);
 		}
-		msgLabel[6].setForeground(myFontColor);
-		strMsg[6] = str;
-		msgLabel[6].setText(strMsg[6]);
-		msgLabel[6].setForeground(emeFontColor);
-		C.send("Message", inputText.getText());
-		inputText.setText("");
+		strMsg[9] = str;
+		msgLabel[9].setText(strMsg[9]);
 	}
 
 }

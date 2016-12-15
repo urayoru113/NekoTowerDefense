@@ -10,8 +10,9 @@ import java.util.ArrayList;
 public class Arms {
 	private int hp;//Tower(player) hp
 	private int gold;
-	private int armLevel;//
+	private int []soldierLevel={1,1};//
 	private int goldLevel;//
+	private int times;
 	ArrayList<Neko>soldier;//add soldier(neko) into arrayList
 	//initialize
 	Arms() {
@@ -19,7 +20,7 @@ public class Arms {
 		gold=100;
 		hp=1000;
 		goldLevel=1;
-		armLevel=1;
+		times=0;
 	}
 
 	Arms(String race) {
@@ -27,6 +28,7 @@ public class Arms {
 	}
 	//add soldier
 	public void addSoldier(int type) {
+		times++;
 		soldier.add(new Neko(type));
 	}
 
@@ -46,13 +48,6 @@ public class Arms {
 		return gold;
 	}
 
-	public void armLevel(int armLevel) {
-		this.armLevel = armLevel;
-	}
-
-	public int getarmLevel() {
-		return armLevel;
-	}
 
 	public void goldLevel(int goldLevel) {
 		this.goldLevel = goldLevel;

@@ -38,7 +38,7 @@ public class Neko {
 			hitCd = 30;// CD
 		}
 	}
-
+	
 	public int getHitMove() {
 		return hitMove;
 	}
