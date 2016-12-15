@@ -48,6 +48,7 @@ public class Client {
 								output.flush();
 								sendMsg = "";
 							}
+							Thread.sleep(10);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
