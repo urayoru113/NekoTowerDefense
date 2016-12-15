@@ -32,6 +32,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
+	int godMaxPositionX = 0, godMaxIndex = 30;
+	int enemyMaxPositionX = 99999, enemyMaxIndex = 30;
 	Color myFontColor = Color.blue;
 	Color emeFontColor = Color.red;
 	String myName = "A";
@@ -61,7 +63,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Image bufferImage;
 	Arms God = new Arms();
 	Arms enemy = new Arms();
-	Timer msgCheck = new Timer(50, this);// set counter
+	Timer msgCheck = new Timer(5, this);// set counter
 	Timer anime = new Timer(5, this);// set counte
 	Timer nekomove = new Timer(30, this);// set move time
 	Timer collistion = new Timer(5, this);
@@ -69,7 +71,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 																	// message
 	Server S;
 	Client C;
-	BackgroundPanel myTower, eneTower,kisaka;
+	BackgroundPanel myTower, eneTower, kisaka;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -142,8 +144,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		pStart = new BackgroundPanel(backgroundimg.getImage(), screenSizeX, screenSizeY);
 		pStart.setSize(screenSizeX, screenSizeY);
 		pStart.setLayout(null);// cancel all set
-		kisaka = new BackgroundPanel(msgBox.getImage(),screenSizeX * 1 / 4,screenSizeY * 22 / 9 / 12);
-		kisaka.setBounds(screenSizeX * 8 / 11, screenSizeY * 13 / 18, screenSizeX/4, screenSizeY * 22 / 9 / 12);
+		kisaka = new BackgroundPanel(msgBox.getImage(), screenSizeX * 1 / 4, screenSizeY * 22 / 9 / 12);
+		kisaka.setBounds(screenSizeX * 8 / 11, screenSizeY * 13 / 18, screenSizeX / 4, screenSizeY * 22 / 9 / 12);
 		// my tower panel
 		myTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
 		if (!(myTowerImg.getImage() == null))
@@ -210,107 +212,129 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 			multiplay();
 			msgCheck.start();
-			// anime.start();
+			anime.start();
 			nekomove.start();
 			collistion.start();
 		}
 
 		/*
-		 * action 0 remove soldier,1 move, 2 attack,
+		 * action 0 remove soldier,1 move, 2 attack, 3 attack tower
 		 ******************************************************************************/
+
 		if (e.getSource() == nekomove) {
-			int godMaxPositionX = 0, godMaxIndex = 30;
-			int enemyMaxPositionX = 99999, enemyMaxIndex = 30;
+			System.out.println("GODsize:" + God.soldier.size() + "godMaxPositionX:" + godMaxPositionX);
+			System.out.println("enemysize:" + enemy.soldier.size() + "enemyMaxPositionX:" + enemyMaxPositionX);
 
-			/* save the most front soldier information */
-			for (int i = 0; i < God.soldier.size(); i++)
-				if (godMaxPositionX < God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth()) {
-					godMaxPositionX = God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth();
-					godMaxIndex = i;
-				}
-			for (int i = 0; i < enemy.soldier.size(); i++)
-				if (enemyMaxPositionX > enemy.soldier.get(i).getPositionX()) {
-					enemyMaxPositionX = enemy.soldier.get(i).getPositionX();
-					enemyMaxIndex = i;
+				if (God.soldier.size() == 0) {
+					godMaxIndex = 30;
+					godMaxPositionX = 0;
 				}
 
+				if (enemy.soldier.size() == 0) {
+
+					enemyMaxIndex = 30;
+					enemyMaxPositionX = screenSizeX * 6 / 10;
+
+				}
+				/* save the most front soldier information */
+				for (int i = 0; i < God.soldier.size(); i++)
+					if (godMaxPositionX < God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth()) {
+						godMaxPositionX = God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth();
+						godMaxIndex = i;
+					}
+				for (int i = 0; i < enemy.soldier.size(); i++)
+					if (enemyMaxPositionX > enemy.soldier.get(i).getPositionX()) {
+						enemyMaxPositionX = enemy.soldier.get(i).getPositionX();
+						enemyMaxIndex = i;
+					}
 			/* my soldier action */
 			for (int i = 0; i < God.soldier.size(); i++) {
+				synchronized (this) {
+					if (enemy.soldier.size() == 0)
+						God.soldier.get(i).setAction(1);
 
-				if (enemyMaxIndex == 30)
-					God.soldier.get(i).setAction(1);
+					if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getHitRange() >= enemyMaxPositionX) {
+						God.soldier.get(i).setAction(2);
+					}
 
-				if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getHitRange() >= enemyMaxPositionX) {
-					God.soldier.get(i).setAction(2);
-				}
+					if (God.soldier.get(i).getHp() <= 0) {
+						God.soldier.get(i).setAction(0);
 
-				if (God.soldier.get(i).getHp() <= 0) {
-					God.soldier.remove(i);
-					continue;
-				}
-
-				/* move */
-				if (God.soldier.get(i).getAction() == 1) {
-					God.soldier.get(i)
-							.setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
-				}
-				/* attack */
-				if (God.soldier.get(i).getAction() == 2) {
-					enemy.soldier.get(enemyMaxIndex)
-							.setHp(enemy.soldier.get(enemyMaxIndex).getHp() - God.soldier.get(i).getDamage());
+					}
+					if (God.soldier.get(i).getAction() == 0) {
+						God.soldier.remove(i);
+						C.send("Neko", "Remove", i);
+						continue;
+					}
+					/* move */
+					if (God.soldier.get(i).getAction() == 1) {
+						God.soldier.get(i)
+								.setPositionX(God.soldier.get(i).getPositionX() + God.soldier.get(i).getMoveSpeed());
+						C.send("Neko", i, "Position", God.soldier.get(i).getPositionX());
+					}
+					/* attack */
+					if (God.soldier.get(i).getAction() == 2) {
+						/* attack normal 1, skill 2 ... */
+						C.send("Neko", enemyMaxIndex, "Attack", 1);
+					}
 				}
 			}
 
 			/* enemy soldier action */
+
 			for (int i = 0; i < enemy.soldier.size(); i++) {
+				synchronized (this) {
+					if (God.soldier.size() == 0)
+						enemy.soldier.get(i).setAction(1);
 
-				if (godMaxIndex == 30)
-					enemy.soldier.get(i).setAction(1);
+					if (enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getHitRange() <= godMaxPositionX) {
+						enemy.soldier.get(i).setAction(2);
+					}
 
-				if (enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getHitRange() <= godMaxPositionX) {
-					enemy.soldier.get(i).setAction(2);
+					if (enemy.soldier.get(i).getAction() == 1) {
+						enemy.soldier.get(i).setPositionX(
+								enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getMoveSpeed());
+					}
 				}
-
-				if (enemy.soldier.get(i).getHp() <= 0) {
-					enemy.soldier.remove(i);
-					continue;
-				}
-
-				/* move */
-				if (enemy.soldier.get(i).getAction() == 1) {
-					enemy.soldier.get(i)
-							.setPositionX(enemy.soldier.get(i).getPositionX() - enemy.soldier.get(i).getMoveSpeed());
-				}
-				/* attack */
-				if (enemy.soldier.get(i).getAction() == 2) {
-					God.soldier.get(enemyMaxIndex)
-							.setHp(God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(i).getDamage());
-				}
-
 			}
 
 		}
 
 		if (e.getSource() == msgCheck) {
-			String s;
-			if (!(S.message() == "")) {
-				communication(emeName + ": " + S.message());
-				msgLabel[8].setForeground(emeFontColor);
-				S.resetMsg();
-			}
-			if (S.getSoldier() > 0) {
-				enemy.addSoldier(S.getSoldier());
-				enemy.soldier.get(enemy.soldier.size() - 1)
-						.setPositionX(screenSizeX * 6 / 10 - enemy.soldier.get(enemy.soldier.size() - 1).getWidth());
-				S.resetSoldier();
-			}
-			if (S.getIndex() != -1) {
-				if (S.getHp() != -1)
-					enemy.soldier.get(S.getIndex()).setHp(S.getHp());
-				if (S.getPosition() != -1)
-					enemy.soldier.get(S.getIndex()).setPositionX(
-							screenSizeX * 6 / 10 - S.getPosition() - enemy.soldier.get(S.getIndex()).getWidth());
-				S.resetSoldierStatus();
+			synchronized (this) {
+				String s;
+				if (!(S.message() == "")) {
+					communication(emeName + ": " + S.message());
+					msgLabel[8].setForeground(emeFontColor);
+					S.resetMsg();
+				}
+				if (S.getSoldier() > 0) {
+					enemy.addSoldier(S.getSoldier());
+					enemy.soldier.get(enemy.soldier.size() - 1).setPositionX(
+							screenSizeX * 6 / 10 - enemy.soldier.get(enemy.soldier.size() - 1).getWidth());
+					S.resetSoldier();
+				}
+				if (S.getIndex() != -1) {
+					if (godMaxIndex != 30) {
+						if (S.getHp() != -1)
+							enemy.soldier.get(S.getIndex()).setHp(S.getHp());
+						if (S.getPosition() != -1)
+							enemy.soldier.get(S.getIndex()).setPositionX(screenSizeX * 6 / 10 - S.getPosition()
+									- enemy.soldier.get(S.getIndex()).getWidth());
+
+						if (S.getAction() == 2) {
+
+							God.soldier.get(godMaxIndex).setHp(
+									God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(S.getIndex()).getDamage());
+						}
+						if (S.getAction() == 0) {
+							System.out.println("i dead");
+							enemy.soldier.get(S.getIndex()).setPositionX(screenSizeX * 6 / 10);
+							enemy.soldier.remove(S.getIndex());
+						}
+						S.resetSoldierStatus();
+					}
+				}
 			}
 		}
 		if (e.getSource() == anime) {

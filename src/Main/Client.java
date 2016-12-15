@@ -44,12 +44,9 @@ public class Client {
 					try {
 						while (sendMsg != "") {
 							synchronized (this) {
-
-								System.out.println("\nClient" + sendMsg);
 								output.writeUTF(sendMsg);
 								output.flush();
 								sendMsg = "";
-								Thread.sleep(80);
 							}
 						}
 					} catch (Exception e) {

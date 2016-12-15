@@ -11,19 +11,13 @@ public class Server {
 	private final int port = 8888;
 	private String[] getMsg;
 	private String Msg = "";
-	private int Soldier = 0, Hp = -1, Position = -1, Index = -1, TowerHp = -1;// if
-																				// 0
-																				// =null
+	private int Soldier = 0, Hp = -1, Position = -1, Index = -1, TowerHp = -1;
+	private int Action = -1;
 
 	/* open server */
 	public Server() {
 		try {
 			server = new ServerSocket(port);
-			/*
-			 * System.out.println("wait connect"); socket = server.accept();
-			 * System.out.println("gethost : InetAddress = " +
-			 * socket.getInetAddress());
-			 */
 		} catch (java.io.IOException e) {
 			System.out.println(e.getMessage());
 		}
@@ -70,9 +64,16 @@ public class Server {
 		for (String g : s)
 			System.out.println(g);
 		for (String getMsg : s) {
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			this.getMsg = getMsg.split("&8o");
-			for (String j : this.getMsg)
-				System.out.println(j);
+			/*
+			 * for (String j : this.getMsg) System.out.println(j);
+			 */
 			switch (this.getMsg[0]) {
 			case "Message":
 				Msg = this.getMsg[1];
@@ -83,18 +84,24 @@ public class Server {
 					Soldier = addSoldier(this.getMsg[2]);
 					break;
 				case "Remove":
+					Action = 0;
+					Index = Integer.parseInt(this.getMsg[2]);
 					break;
 				default:
 					Index = Integer.parseInt(this.getMsg[1]);
 					switch (this.getMsg[2]) {
-					//HP
+					// HP
 					case "Hp":
 						Hp = Integer.parseInt(this.getMsg[3]);
 						break;
-						//position
+					// position
 					case "Position":
 						Position = Integer.parseInt(this.getMsg[3]);
 						break;
+					case "Attack":
+						Action = 2;
+						break;
+
 					}
 					break;
 				}
@@ -102,7 +109,7 @@ public class Server {
 			case "Tower":
 				switch (this.getMsg[1]) {
 				case "Hp":
-					TowerHp=Integer.parseInt(this.getMsg[2]);
+					TowerHp = Integer.parseInt(this.getMsg[2]);
 					break;
 				case "Level":
 					break;
@@ -111,26 +118,27 @@ public class Server {
 		}
 	}
 
-	public int getTowerHp() {
-		return TowerHp;
+	public int getIndex() {
+		return Index;
 	}
 
 	public int getHp() {
 		return Hp;
 	}
 
-	public int getIndex() {
-		return Index;
-	}
-
 	public int getPosition() {
 		return Position;
+	}
+
+	public int getAction() {
+		return Action;
 	}
 
 	public void resetSoldierStatus() {
 		Index = -1;
 		Hp = -1;
 		Position = -1;
+		Action = -1;
 	}
 
 	public String message() {
