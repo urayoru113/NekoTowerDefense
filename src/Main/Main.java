@@ -37,14 +37,15 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Toolkit tk = Toolkit.getDefaultToolkit();
 	int screenSizeX = (int) tk.getScreenSize().getWidth();
 	int screenSizeY = (int) tk.getScreenSize().getHeight();
-	int godMaxPositionX = 0, godMaxIndex = 30;		
+	int godMaxPositionX = 0, godMaxIndex = 30;
 	int enemyMaxPositionX = 99999, enemyMaxIndex = 30;
 	Color myFontColor = Color.blue;
 	Color emeFontColor = Color.red;
 	String myName = "A";
 	String emeName = "B";
 	BackgroundPanel pStart;
-	ImageIcon myTowerImg = new ImageIcon("src//img//rev_1.png");
+	ImageIcon myTowerImg = new ImageIcon("src//img//N300_neko-slime.png");
+	ImageIcon eneTowerImg= new ImageIcon("src//img//N300_neko-slime_phixr.png");
 	ImageIcon backgroundimg = new ImageIcon("src//img//background.png");
 	ImageIcon msgBox = new ImageIcon("src//img//kisakajpg.jpg");
 	ImageIcon myCat = new ImageIcon("src//img//anpo_1_phixr.png");
@@ -108,11 +109,17 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	}
 
 	public void paintFight(Graphics g) {
-		g.drawImage(backgroundimg.getImage(),-screenSizeX / 5,0,screenSizeX,screenSizeY,this);
+		g.drawImage(backgroundimg.getImage(), -screenSizeX / 5, 0, screenSizeX, screenSizeY, this);
 		for (int i = 0; i < God.soldier.size(); i++)
-			g.drawImage(myCat.getImage(), God.soldier.get(i).getPositionX(), screenSizeY * 9 / 17-God.soldier.get(i).getHeigth(), God.soldier.get(i).getWidth(), God.soldier.get(i).getHeigth(),this);
+			g.drawImage(myCat.getImage(), God.soldier.get(i).getPositionX(),
+					screenSizeY * 9 / 17 - God.soldier.get(i).getHeigth(), God.soldier.get(i).getWidth(),
+					God.soldier.get(i).getHeigth(), this);
 		for (int i = 0; i < enemy.soldier.size(); i++)
-			g.drawImage(eneCat.getImage(),enemy.soldier.get(i).getPositionX(), screenSizeY * 9 / 17-enemy.soldier.get(i).getHeigth(), enemy.soldier.get(i).getWidth(), enemy.soldier.get(i).getHeigth(),this);
+			g.drawImage(eneCat.getImage(), enemy.soldier.get(i).getPositionX(),
+					screenSizeY * 9 / 17 - enemy.soldier.get(i).getHeigth(), enemy.soldier.get(i).getWidth(),
+					enemy.soldier.get(i).getHeigth(), this);
+		jMyTowerHp.setText(God.getHp() + " / 1000");
+		jMyGold.setText("Gold: " + God.getGold());
 	}
 
 	int i = 0;
@@ -148,28 +155,27 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		kisaka = new BackgroundPanel(msgBox.getImage(), screenSizeX * 1 / 4, screenSizeY * 22 / 9 / 12);
 		kisaka.setBounds(screenSizeX * 8 / 11, screenSizeY * 13 / 18, screenSizeX / 4, screenSizeY * 22 / 9 / 12);
 		// my tower panel
-		myTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
-		if (!(myTowerImg.getImage() == null))
-			System.out.println("fuxk");
-		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
+		myTower = new BackgroundPanel(myTowerImg.getImage(), 150, 150);
+		myTower.setBounds(screenSizeX / 20, screenSizeY * 1 / 3, 150, 150);
 		// myTower.setBackground(Color.BLACK);
 		// enemy tower panel
-		eneTower = new BackgroundPanel(myTowerImg.getImage(), 440 / 2, 451 / 2);
-		eneTower.setBounds(screenSizeX * 16 / 20, screenSizeY * 1 / 3, 440 / 2, 451 / 2);
+		eneTower = new BackgroundPanel(eneTowerImg.getImage(), 150, 150);
+		eneTower.setBounds(screenSizeX * 16 / 20, screenSizeY * 1 / 3, 150, 150);
 
 		// my hp label
 		jMyTowerHp = new JLabel(God.getHp() + " / 1000");
+		jMyTowerHp.setForeground(Color.RED);
 		jMyTowerHp.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 60, 200, 30);
-		jMyTowerHp.setBackground(Color.red);
 		pStart.add(jMyTowerHp);
 
 		// my gold label
 		jMyGold = new JLabel("Gold: " + God.getGold());
+		jMyGold.setForeground(Color.YELLOW);
 		jMyGold.setBounds(screenSizeX * 1 / 10, screenSizeY * 1 / 3 - 120, 200, 30);
 		jMyGold.setBackground(Color.red);
 		pStart.add(jMyGold);
-		// pStart.add(myTower);
-		// pStart.add(eneTower);
+		pStart.add(myTower);
+		pStart.add(eneTower);
 
 		// make battle button
 		neko = new JButton("Neko");
@@ -221,38 +227,44 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		 ******************************************************************************/
 
 		if (e.getSource() == nekomove) {
+			God.setGold(God.getGold() + 1);
 			System.out.println("GODsize:" + God.soldier.size() + "godMaxPositionX:" + godMaxPositionX);
 			System.out.println("enemysize:" + enemy.soldier.size() + "enemyMaxPositionX:" + enemyMaxPositionX);
+			if (God.getHp() <= 0) {
+				anime.stop();
+				nekomove.stop();
+				dispose();
+			}
+			if (God.soldier.size() == 0) {
+				godMaxIndex = 30;
+				godMaxPositionX = 0;
+			}
 
-				if (God.soldier.size() == 0) {
-					godMaxIndex = 30;
-					godMaxPositionX = 0;
+			if (enemy.soldier.size() == 0) {
+
+				enemyMaxIndex = 30;
+				enemyMaxPositionX = screenSizeX * 6 / 10;
+
+			}
+			/* save the most front soldier information */
+			for (int i = 0; i < God.soldier.size(); i++)
+				if (godMaxPositionX < God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth()) {
+					godMaxPositionX = God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth();
+					godMaxIndex = i;
 				}
-
-				if (enemy.soldier.size() == 0) {
-
-					enemyMaxIndex = 30;
-					enemyMaxPositionX = screenSizeX * 6 / 10;
-
+			for (int i = 0; i < enemy.soldier.size(); i++)
+				if (enemyMaxPositionX > enemy.soldier.get(i).getPositionX()) {
+					enemyMaxPositionX = enemy.soldier.get(i).getPositionX();
+					enemyMaxIndex = i;
 				}
-				/* save the most front soldier information */
-				for (int i = 0; i < God.soldier.size(); i++)
-					if (godMaxPositionX < God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth()) {
-						godMaxPositionX = God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth();
-						godMaxIndex = i;
-					}
-				for (int i = 0; i < enemy.soldier.size(); i++)
-					if (enemyMaxPositionX > enemy.soldier.get(i).getPositionX()) {
-						enemyMaxPositionX = enemy.soldier.get(i).getPositionX();
-						enemyMaxIndex = i;
-					}
 			/* my soldier action */
 			for (int i = 0; i < God.soldier.size(); i++) {
 				{
 					if (enemy.soldier.size() == 0)
 						God.soldier.get(i).setAction(1);
 
-					if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getHitRange() >= enemyMaxPositionX) {
+					if (God.soldier.get(i).getPositionX() + God.soldier.get(i).getWidth()
+							+ God.soldier.get(i).getHitRange() >= enemyMaxPositionX) {
 						God.soldier.get(i).setAction(2);
 					}
 
@@ -275,6 +287,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 					if (God.soldier.get(i).getAction() == 2) {
 						/* attack normal 1, skill 2 ... */
 						C.send("Neko", enemyMaxIndex, "Attack", 1);
+						if (enemy.soldier.size() == 0)
+							C.send("Tower", "Hp", God.soldier.get(i).getDamage());
 					}
 				}
 			}
@@ -303,8 +317,11 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		}
 
 		if (e.getSource() == neko) {
-			God.addSoldier(1);
-			C.send("Neko", "Add", 1);
+			if (God.getGold() >= 300) {
+				God.addSoldier(1);
+				God.setGold(God.getGold()-300);
+				C.send("Neko", "Add", 1);
+			}
 		}
 	}
 
@@ -381,6 +398,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		strMsg[9] = str;
 		msgLabel[9].setText(strMsg[9]);
 	}
+
 	class Server {
 		/* initialize var */
 		private ServerSocket server;
@@ -388,8 +406,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		private final int port = 8888;
 		private String[] getMsg;
 		private String Msg = "";
-		private int Soldier = 0, Hp = -1, Position = -1, Index = -1, TowerHp = -1;
-		private int Action = -1;
+		private int Hp = 0, Position = 0, Index = 0, TowerDamage = 0;
 
 		/* open server */
 		public Server() {
@@ -479,12 +496,12 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 						// position
 						case "Position":
 							Position = Integer.parseInt(this.getMsg[3]);
-							enemy.soldier.get(Index).setPositionX(screenSizeX * 6 / 10 - Position
-									- enemy.soldier.get(Index).getWidth());
+							enemy.soldier.get(Index).setPositionX(
+									screenSizeX * 6 / 10 - Position - enemy.soldier.get(Index).getWidth());
 							break;
 						case "Attack":
-							God.soldier.get(godMaxIndex).setHp(
-									God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(Index).getDamage());
+							God.soldier.get(godMaxIndex)
+									.setHp(God.soldier.get(godMaxIndex).getHp() - enemy.soldier.get(Index).getDamage());
 							break;
 
 						}
@@ -494,7 +511,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				case "Tower":
 					switch (this.getMsg[1]) {
 					case "Hp":
-						TowerHp = Integer.parseInt(this.getMsg[2]);
+						TowerDamage = Integer.parseInt(this.getMsg[2]);
+						God.setHp(God.getHp() - TowerDamage);
 						break;
 					case "Level":
 						break;
@@ -503,11 +521,9 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			}
 		}
 
-
 		public String message() {
 			return Msg;
 		}
-
 
 		public void resetMsg() {
 			Msg = "";

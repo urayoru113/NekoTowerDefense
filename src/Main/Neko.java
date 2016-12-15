@@ -29,9 +29,9 @@ public class Neko {
 			level = 1;
 			damage = 5;
 			positionX = 0;
-			width = 50;
-			heigth = 40;
-			hitRange = 30;
+			width = 130;
+			heigth = 165;
+			hitRange = 10;
 			defense = 1;
 			hitTime = 30;// Timer
 			hitCd = 30;// CD
