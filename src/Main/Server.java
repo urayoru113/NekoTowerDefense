@@ -11,7 +11,9 @@ public class Server {
 	private final int port = 8888;
 	private String[] getMsg;
 	private String Msg = "";
-	private int Soldier = 0;//if 0 =null
+	private int Soldier = 0, Hp = -1, Position = -1, Index = -1, TowerHp = -1;// if
+																				// 0
+																				// =null
 
 	/* open server */
 	public Server() {
@@ -80,13 +82,56 @@ public class Server {
 				case "Add":
 					Soldier = addSoldier(this.getMsg[2]);
 					break;
+				case "Remove":
+					break;
+				default:
+					Index = Integer.parseInt(this.getMsg[1]);
+					switch (this.getMsg[2]) {
+					//HP
+					case "Hp":
+						Hp = Integer.parseInt(this.getMsg[3]);
+						break;
+						//position
+					case "Position":
+						Position = Integer.parseInt(this.getMsg[3]);
+						break;
+					}
+					break;
 				}
 				break;
-
+			case "Tower":
+				switch (this.getMsg[1]) {
+				case "Hp":
+					TowerHp=Integer.parseInt(this.getMsg[2]);
+					break;
+				case "Level":
+					break;
+				}
 			}
 		}
 	}
 
+	public int getTowerHp() {
+		return TowerHp;
+	}
+
+	public int getHp() {
+		return Hp;
+	}
+
+	public int getIndex() {
+		return Index;
+	}
+
+	public int getPosition() {
+		return Position;
+	}
+
+	public void resetSoldierStatus() {
+		Index = -1;
+		Hp = -1;
+		Position = -1;
+	}
 
 	public String message() {
 		return Msg;
@@ -95,12 +140,15 @@ public class Server {
 	public int addSoldier(String type) {
 		return Integer.parseInt(type);
 	}
-	public int getSoldier(){
+
+	public int getSoldier() {
 		return Soldier;
 	}
-	public void resetSoldier(){
-		Soldier=0;
+
+	public void resetSoldier() {
+		Soldier = 0;
 	}
+
 	public void resetMsg() {
 		Msg = "";
 	}

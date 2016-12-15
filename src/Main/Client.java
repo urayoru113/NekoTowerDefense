@@ -26,7 +26,7 @@ public class Client {
 		}
 	}
 
-	public void sendpkg(){
+	public void sendpkg() {
 		new Thread(new Runnable() {
 			DataOutputStream output;
 			DataInputStream input;
@@ -59,23 +59,26 @@ public class Client {
 			}
 		}).start();
 	}
+
 	/*
 	 * chat method
 	 */
 	public void send(String type, String msg) {
 		this.sendMsg += type + "&8o" + msg + "&9o";
 	}
+
 	/*
 	 * 
 	 */
-	public void send(String type, String method, int n) {
-		this.sendMsg += type + "&8o"  + method + "&8o" + n + "&9o";
+	public void send(String type, String mod, int n) {
+		this.sendMsg += type + "&8o" + mod + "&8o" + n + "&9o";
 	}
+
 	/*
 	 * 
 	 */
-	public void send(String type, int n) {
-		this.sendMsg += type + "&8o" + n + "&9o";
+	public void send(String type, int index, String ability, int value) {
+		this.sendMsg += type + "&8o" + index + "&8o" + ability + "&8o" + value + "&9o";
 	}
 
 	/* close socket socket */
