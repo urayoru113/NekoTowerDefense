@@ -90,6 +90,7 @@ public class Server {
 					case "Hp":
 						Hp = Integer.parseInt(this.getMsg[3]);
 						break;
+						//position
 					case "Position":
 						Position = Integer.parseInt(this.getMsg[3]);
 						break;
