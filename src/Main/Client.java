@@ -51,6 +51,7 @@ public class Client {
 							Thread.sleep(10);
 						}
 					} catch (Exception e) {
+						System.exit(1);
 						e.printStackTrace();
 					}
 				}
