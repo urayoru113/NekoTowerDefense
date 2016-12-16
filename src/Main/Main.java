@@ -48,8 +48,8 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	ImageIcon eneTowerImg = new ImageIcon("src//img//N300_neko-slime_phixr.png");
 	ImageIcon backgroundimg = new ImageIcon("src//img//background.png");
 	ImageIcon msgBox = new ImageIcon("src//img//kisakajpg.jpg");
-	ImageIcon myCat = new ImageIcon("src//img//anpo_1_phixr.png");
-	ImageIcon eneCat = new ImageIcon("src//img//anpo_1.png");
+	ImageIcon[] myCat = new ImageIcon[3];
+	ImageIcon[] eneCat = new ImageIcon[3];
 	// JButton Exit = new JButton(new ImageIcon(""));
 	JButton Exit = new JButton("Exit");
 	// JButton Multi = new JButton(new ImageIcon(""));
@@ -58,7 +58,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	JButton Room = new JButton("CreateRoom");
 
 	// the soldier
-	JButton neko;
+	JButton[] neko = new JButton[3];
 	// the gold
 	JButton goldLabel = new JButton("Gold");
 
@@ -73,6 +73,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	Arms enemy = new Arms();
 	Timer anime = new Timer(5, this);// set counte
 	Timer nekomove = new Timer(30, this);// set move time
+	Timer publicEvent = new Timer(100, this);
 	String[] strMsg = { "", "", "", "", "", "", "", "", "", "" };// communication
 																	// message
 	Server S;
@@ -91,6 +92,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		setLayout(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(screenSizeX, screenSizeY);
+		// setUndecorated(true);
 		setJMenuBar(menu);
 		Room.setFont(new Font("SansSerif", Font.PLAIN, 18));
 		Room.setBounds(screenSizeX / 2 - 125, 250, 250, 50);
@@ -106,16 +108,17 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		add(Room);
 		setVisible(true);
 		start();
+		readImage();
 	}
 
 	public void paintFight(Graphics g) {
 		g.drawImage(backgroundimg.getImage(), -screenSizeX / 5, 0, screenSizeX, screenSizeY, this);
 		for (int i = 0; i < God.soldier.size(); i++)
-			g.drawImage(myCat.getImage(), God.soldier.get(i).getPositionX(),
+			g.drawImage(myCat[God.soldier.get(i).getImage()].getImage(), God.soldier.get(i).getPositionX(),
 					screenSizeY * 9 / 17 - God.soldier.get(i).getHeigth(), God.soldier.get(i).getWidth(),
 					God.soldier.get(i).getHeigth(), this);
 		for (int i = 0; i < enemy.soldier.size(); i++)
-			g.drawImage(eneCat.getImage(), enemy.soldier.get(i).getPositionX(),
+			g.drawImage(eneCat[enemy.soldier.get(i).getImage()].getImage(), enemy.soldier.get(i).getPositionX(),
 					screenSizeY * 9 / 17 - enemy.soldier.get(i).getHeigth(), enemy.soldier.get(i).getWidth(),
 					enemy.soldier.get(i).getHeigth(), this);
 		jMyTowerHp.setText(God.getHp() + " / 1000");
@@ -127,7 +130,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 	@Override
 	public void update(Graphics g)// double buffer
 	{
-		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY * 12 / 17);
+		bufferImage = createImage(screenSizeX / 10 * 6, screenSizeY * 12 / 17 - 30);
 		Graphics gBuffer = bufferImage.getGraphics();
 		if (gBuffer != null)
 			paintFight(gBuffer);
@@ -145,6 +148,18 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		play.open(sound);
 		play.start();
 		play.loop(-1);
+	}
+
+	void readImage() {
+		/* monster image */
+		myCat[1] = new ImageIcon("src//img//anpo_1_phixr.png");
+		eneCat[1] = new ImageIcon("src//img//anpo_1.png");
+		myCat[2] = new ImageIcon("src//img//heishi.png");
+		eneCat[2] = new ImageIcon("src//img//heishi.png");
+		/* button image */
+		neko[1].setIcon(new ImageIcon("src//img//images.jpg"));
+		neko[2].setIcon(new ImageIcon("src//img//images1.jpg"));
+
 	}
 
 	private void start() {
@@ -178,10 +193,15 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		pStart.add(eneTower);
 
 		// make battle button
-		neko = new JButton("Neko");
-		neko.setBounds(25, screenSizeY * 13 / 18, screenSizeX * 1 / 9, screenSizeY * 2 / 9);
-		neko.addActionListener(this);
-		pStart.add(neko);
+
+		for (int i = 1; i < 3; i++) {
+			neko[i] = new JButton();
+			neko[i].setContentAreaFilled(false);
+			neko[i].setBounds(25 + screenSizeX * 1 / 9 * (i - 1), screenSizeY * 13 / 18, screenSizeX * 1 / 9,
+					screenSizeY * 2 / 9);
+			neko[i].addActionListener(this);
+			pStart.add(neko[i]);
+		}
 		// make a communication Label
 		for (int i = 0; i < 10; i++) {
 			msgLabel[i] = new JLabel(strMsg[i]);
@@ -190,7 +210,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			pStart.add(msgLabel[i]);
 		}
 		inputText.setBounds(screenSizeX * 8 / 11, screenSizeY * 7 / 9 + screenSizeY * 2 / 9 * 7 / 12,
-				screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12);
+				screenSizeX * 1 / 4, screenSizeY * 2 / 9 / 12 + 5);
 		inputText.addKeyListener(this);
 		pStart.add(kisaka);
 		pStart.add(inputText);
@@ -219,7 +239,13 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 
 			multiplay();
 			anime.start();
+			publicEvent.start();
 			nekomove.start();
+		}
+
+		/* public event */
+		if (e.getSource() == publicEvent) {
+			God.setGold(God.getGold() + 70);
 		}
 
 		/*
@@ -227,7 +253,7 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 		 ******************************************************************************/
 
 		if (e.getSource() == nekomove) {
-			God.setGold(God.getGold() + 1);
+
 			System.out.println("GODsize:" + God.soldier.size() + "godMaxPositionX:" + godMaxPositionX);
 			System.out.println("enemysize:" + enemy.soldier.size() + "enemyMaxPositionX:" + enemyMaxPositionX);
 			if (God.getHp() <= 0) {
@@ -235,6 +261,12 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 				nekomove.stop();
 				S.closeSocket();
 				dispose();
+			}
+			try {
+				Thread.sleep(20);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
 			if (God.soldier.size() == 0) {
 				godMaxIndex = 30;
@@ -317,11 +349,18 @@ public class Main extends JFrame implements ActionListener, KeyListener, MouseLi
 			update(getGraphics());
 		}
 
-		if (e.getSource() == neko) {
+		if (e.getSource() == neko[1]) {
 			if (God.getGold() >= 300) {
 				God.addSoldier(1);
 				God.setGold(God.getGold() - 300);
 				C.send("Neko", "Add", 1);
+			}
+		}
+		if (e.getSource() == neko[2]) {
+			if (God.getGold() >= 500) {
+				God.addSoldier(2);
+				God.setGold(God.getGold() - 500);
+				C.send("Neko", "Add", 2);
 			}
 		}
 	}

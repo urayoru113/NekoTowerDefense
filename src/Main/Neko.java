@@ -11,33 +11,51 @@ import java.awt.Image;
 public class Neko {
 	private int hp, mp, kb, damage, defense;
 	private int moveSpeed, backSpeed, hitMove;
-	private int type, level, action, skill;
+	private int type, action, skill;
 	private int positionX, positionY, hitTime, hitCd;
 	private int heigth, width;
 	private int hitRange;
-
+	private int img;
 	Neko() {
 
 	}
 
-	Neko(int kind) {
+	Neko(int kind,int level) {
+		action = 1;
+		type = kind;
+		positionX = 0;
 		if (kind == 1) {
-			action = 1;// 0 stop // 1 move // 2 attack
-			hp = 100;
+			hp = 100 + level*50;
 			moveSpeed = 1;
-			type = kind;
-			level = 1;
 			damage = 5;
-			positionX = 0;
 			width = 130;
 			heigth = 165;
 			hitRange = 10;
 			defense = 1;
 			hitTime = 30;// Timer
 			hitCd = 30;// CD
+			img = 1;
+		}
+		if (kind == 2) {
+			hp = 150;
+			moveSpeed = 2;
+			damage = 10;
+			width = 201;
+			heigth = 175;
+			hitRange = 15;
+			defense = 1;
+			hitTime = 30;// Timer
+			hitCd = 30;// CD
+			img = 2;
 		}
 	}
-	
+
+	public int getImage(){
+		return img;
+	}
+	public void setImage(int img){
+		this.img = img;
+	}
 	public int getHitMove() {
 		return hitMove;
 	}
@@ -90,13 +108,6 @@ public class Neko {
 		return hp;
 	}
 
-	public void setlevel(int level) {
-		this.level = level;
-	}
-
-	public int getLabel() {
-		return level;
-	}
 
 	public void setPositionX(int positionX) {
 		this.positionX = positionX;
